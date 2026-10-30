@@ -10,6 +10,7 @@ use Closure;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\URL;
 use Symfony\Component\HttpFoundation\Response;
 
 final readonly class VerifyInternalSignature
@@ -45,7 +46,23 @@ final readonly class VerifyInternalSignature
         }
 
         $request->attributes->set(self::ATTRIBUTE_SERVICE, $service);
+        self::usePublicRoot();
 
         return $next($request);
+    }
+
+    private static function usePublicRoot(): void
+    {
+        $root = rtrim((string) config('app.url'), '/');
+
+        if ($root === '') {
+            return;
+        }
+
+        URL::forceRootUrl($root);
+
+        if (str_starts_with($root, 'https://')) {
+            URL::forceScheme('https');
+        }
     }
 }
