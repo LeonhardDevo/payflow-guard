@@ -127,6 +127,8 @@ jobs:
         run: php artisan test
       - name: Vitest (front-end unit tests)
         run: npm test
+        env:
+          LARAVEL_BYPASS_ENV_CHECK: "1"
 
   # ------------------------------------------------------------------ worker
   worker:

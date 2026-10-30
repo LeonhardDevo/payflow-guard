@@ -6,11 +6,6 @@ import laravel from 'laravel-vite-plugin';
 import i18n from 'laravel-vue-i18n/vite';
 import { defineConfig, lazyPlugins } from 'vite-plus';
 
-/*
- * Fonts are self-hosted through @fontsource-variable/* packages imported in
- * resources/css/brand.css — no font CDN (Bunny/Google) is ever contacted,
- * neither at build time nor at runtime (PLATFORM.md §0.1).
- */
 export default defineConfig({
     plugins: lazyPlugins(() => [
         laravel({
@@ -30,19 +25,12 @@ export default defineConfig({
         wayfinder({
             formVariants: true,
         }),
-        // lang/{en,ru}/*.php -> lang/php_{en,ru}.json (merged with lang/{en,ru}.json at runtime)
         i18n(),
     ]),
     build: {
-        // The largest chunk is the tree-shaken ECharts renderer (~570 kB,
-        // ~195 kB gzip), loaded lazily by ThemedChart only on chart pages.
         chunkSizeWarningLimit: 640,
     },
     optimizeDeps: {
-        // Chart deps are only reached through the lazy EChart.vue import, so the dev
-        // optimizer would discover them on the first chart page and bundle them in a
-        // second pass with its own Vue copy ("Missing ref owner context" / ECharts
-        // "invalid dom" until a full reload). Pre-bundle them with everything else.
         include: [
             'echarts/core',
             'echarts/charts',
@@ -52,19 +40,9 @@ export default defineConfig({
         ],
     },
     server: {
-        // IPv4 loopback on purpose: on Windows/Node "localhost" may bind to [::1], and an
-        // IPv6 literal in public/hot cannot be allowed by the CSP (dev stylesheets get
-        // blocked). `vp dev --host <addr>` still overrides this.
         host: '127.0.0.1',
         watch: {
-            ignored: [
-                '**/.agents/**',
-                '**/.claude/**',
-                '**/.cursor/**',
-                '**/.junie/**',
-                '**/vendor/**',
-                '**/lang/php_*.json',
-            ],
+            ignored: ['**/vendor/**', '**/lang/php_*.json'],
         },
     },
     test: {
