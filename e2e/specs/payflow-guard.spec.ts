@@ -5,6 +5,12 @@ import { chooseOption, completeStepUp, expect, expectNoEmoji, PF, pfLogin, reset
 test.describe.configure({ mode: 'serial', timeout: 420_000 });
 
 const IBAN_RE = /[A-Z]{2}\d{2}[A-Z0-9]{10,30}/;
+const HIGH_RISK_SIGNALS = ['lookalike_domain', 'holder_name_mismatch', 'country_changed', 'urgency_language'];
+const VERIFY_BODY = {
+  method: 'callback_known_phone',
+  checklist: { called_known_number: true, confirmed_holder_name: true, confirmed_last4: true, confirmed_request_origin: true },
+  note: 'Called the known number and confirmed the request',
+};
 
 async function pickSelect(page: Page, triggerId: string, option: string | RegExp): Promise<void> {
   await page.locator(`#${triggerId}`).click();
@@ -22,6 +28,14 @@ async function stepUpIfAsked(page: Page, email: string): Promise<void> {
   if (await dialog.isVisible({ timeout: 4_000 }).catch(() => false)) await completeStepUp(page, email);
 }
 
+async function verify(page: Page, email: string, note?: string): Promise<void> {
+  await checkAll(page);
+  if (note) await page.locator('#verify-note').fill(note);
+  await page.getByTestId('verify-submit').click();
+  await stepUpIfAsked(page, email);
+  await expect(page.getByTestId('change-status')).toHaveAttribute('data-status', 'verified', { timeout: 20_000 });
+}
+
 async function approve(page: Page, email: string): Promise<void> {
   await page.getByTestId('payout-approve').click();
   await page.getByTestId('approve-confirm').click();
@@ -32,9 +46,14 @@ async function signalCodes(page: Page): Promise<string[]> {
   return page.getByTestId('risk-signals').locator('li').evaluateAll((items) => items.map((item) => item.getAttribute('data-code') ?? ''));
 }
 
-test.describe('PayFlow Payment Guard', () => {
-  let vendorUrl = '';
+async function pendingReviewHref(page: Page): Promise<string> {
+  await expect(page.getByTestId('vendor-pending-change')).toBeVisible();
+  const href = await page.getByTestId('vendor-pending-change').getByRole('link').first().getAttribute('href');
+  expect(href).toBeTruthy();
+  return href!;
+}
 
+test.describe('PayFlow Payment Guard', () => {
   test.beforeAll(async ({ browser }) => {
     const page = await browser.newPage();
     await resetDemo(page);
@@ -57,7 +76,7 @@ test.describe('PayFlow Payment Guard', () => {
     await expect(page).toHaveURL(/\/guard\/bank-changes\/\d+$/);
     await expect(page.getByTestId('risk-badge').first()).toHaveAttribute('data-band', 'high');
     const codes = await signalCodes(page);
-    for (const code of ['lookalike_domain', 'holder_name_mismatch', 'country_changed', 'urgency_language']) expect(codes).toContain(code);
+    for (const code of HIGH_RISK_SIGNALS) expect(codes).toContain(code);
     const review = await page.locator('main, #main').first().innerText();
     expect(review).toContain('0519');
     expect(review, 'full IBAN must stay masked until revealed').not.toMatch(IBAN_RE);
@@ -74,7 +93,7 @@ test.describe('PayFlow Payment Guard', () => {
     await app.shot('j4-payout-on-hold');
   });
 
-  test('J4 vendor details are verified by a second person, then a payout needs two approvals', { tag: '@flow' }, async ({ page, app, openSession }) => {
+  test('J4 vendor details are verified by a second person, a risky change enters cooling-off and the payout needs two approvals', { tag: '@flow' }, async ({ page, app, openSession }) => {
     await pfLogin(page, PF.finance);
     await app.setLocale(app.locale);
 
@@ -91,33 +110,53 @@ test.describe('PayFlow Payment Guard', () => {
     await pickSelect(page, 'vendor-bank-currency', 'EUR');
     await page.getByTestId('vendor-save').click();
     await expect(page).toHaveURL(/\/vendors\/\d+$/);
-    vendorUrl = new URL(page.url()).pathname;
-    await expect(page.getByTestId('vendor-pending-change')).toBeVisible();
-    const reviewHref = await page.getByTestId('vendor-pending-change').getByRole('link').first().getAttribute('href');
-    expect(reviewHref).toBeTruthy();
+    const vendorUrl = new URL(page.url()).pathname;
+    const initialReview = await pendingReviewHref(page);
 
-    await page.goto(reviewHref!);
+    await page.goto(initialReview);
     await expect(page.getByTestId('cannot-verify')).toHaveAttribute('data-reason', 'is_requester');
     await expect(page.getByTestId('verify-form')).toHaveCount(0);
 
+    const approver = await openSession();
+    await pfLogin(approver.page, PF.approver);
+    await approver.page.goto(initialReview);
+    await verify(approver.page, PF.approver);
+
+    await page.goto(`${vendorUrl}/bank-changes/create`);
+    await page.locator('#change-holder').fill('Acme Payments UAB');
+    await page.getByTestId('bank-iban').fill('LT787300010133224466');
+    await chooseOption(page, 'change-country', /Lithuania|Литва/);
+    await pickSelect(page, 'change-currency', 'EUR');
+    await page.getByTestId('change-contact').fill('billing@acmedev-payments.example');
+    await page.getByTestId('change-text').fill('Please update our bank account urgently, the old one is closed. Urgent payment needed today.');
+    await page.getByTestId('bank-change-submit').click();
+    await expect(page).toHaveURL(/\/guard\/bank-changes\/\d+$/);
+    const changeReview = new URL(page.url()).pathname;
+    await expect(page.getByTestId('risk-badge').first()).toHaveAttribute('data-band', 'high');
+    const codes = await signalCodes(page);
+    for (const code of HIGH_RISK_SIGNALS) expect(codes, `signals: ${codes.join(', ')}`).toContain(code);
+    await expect(page.locator('[data-test="bank-diff"] [data-field="account"]')).toHaveAttribute('data-changed', 'true');
+    await expect(page.getByTestId('cannot-verify')).toHaveAttribute('data-reason', 'is_requester');
+    await expect(page.getByTestId('verify-form')).toHaveCount(0);
+    await app.axe('j4-bank-change-review');
+    await app.shot('j4-review');
+
+    const self = await appRequest(page, `${changeReview}/verify`, { data: VERIFY_BODY });
+    expect(self.status()).toBe(403);
+
     const fresh = await openSession();
     await pfLogin(fresh.page, PF.newApprover);
-    await fresh.page.goto(reviewHref!);
+    await fresh.page.goto(changeReview);
     await expect(fresh.page.getByTestId('cannot-verify')).toHaveAttribute('data-reason', 'not_eligible_yet');
-    const early = await appRequest(fresh.page, `${new URL(reviewHref!, app.config.baseURL).pathname}/verify`, {
-      data: { method: 'callback_known_phone', checklist: { called_known_number: true, confirmed_holder_name: true, confirmed_last4: true, confirmed_request_origin: true }, note: 'Trust delay check' },
-    });
+    const early = await appRequest(fresh.page, `${changeReview}/verify`, { data: VERIFY_BODY });
     expect([403, 409]).toContain(early.status());
     expect(((await early.json()) as { code?: string }).code).toBe('not_eligible_yet');
 
-    const approver = await openSession();
-    await pfLogin(approver.page, PF.approver);
-    await approver.page.goto(reviewHref!);
-    await checkAll(approver.page);
-    await approver.page.getByTestId('verify-submit').click();
-    await stepUpIfAsked(approver.page, PF.approver);
-    await expect(approver.page.getByTestId('change-status')).toHaveAttribute('data-status', 'verified', { timeout: 20_000 });
+    await approver.page.goto(changeReview);
+    await verify(approver.page, PF.approver, VERIFY_BODY.note);
     await approver.app.shot('j4-verified');
+    await approver.page.goto(vendorUrl);
+    await expect(approver.page.getByTestId('cooling-off')).toBeVisible();
 
     await page.goto(`/payouts/create?vendor_id=${vendorUrl.split('/').pop()}`);
     await page.getByTestId('payout-amount').fill('900.00');
@@ -164,40 +203,6 @@ test.describe('PayFlow Payment Guard', () => {
     const auditText = await owner.page.locator('main, #main').first().innerText();
     expect(auditText).not.toMatch(IBAN_RE);
     await owner.app.shot('j4-audit');
-  });
-
-  test('J4 a suspicious bank change is flagged and the requester cannot verify it', { tag: '@flow' }, async ({ page, app }) => {
-    test.skip(!vendorUrl, 'depends on the vendor created in the previous journey');
-    await pfLogin(page, PF.finance);
-    await app.setLocale(app.locale);
-
-    await page.goto(`${vendorUrl}/bank-changes/create`);
-    await page.locator('#change-holder').fill('Acme Payments UAB');
-    await page.getByTestId('bank-iban').fill('LT787300010133224466');
-    await chooseOption(page, 'change-country', /Lithuania|Литва/);
-    await pickSelect(page, 'change-currency', 'EUR');
-    await page.getByTestId('change-contact').fill('billing@acmedev-payments.example');
-    await page.getByTestId('change-text').fill('Please update our bank account urgently, the old one is closed. Urgent payment needed today.');
-    await page.getByTestId('bank-change-submit').click();
-
-    await expect(page).toHaveURL(/\/guard\/bank-changes\/\d+$/);
-    await expect(page.getByTestId('risk-badge').first()).toHaveAttribute('data-band', 'high');
-    const codes = await signalCodes(page);
-    for (const code of ['lookalike_domain', 'holder_name_mismatch', 'country_changed', 'urgency_language']) {
-      expect(codes, `signals: ${codes.join(', ')}`).toContain(code);
-    }
-    await expect(page.locator('[data-test="bank-diff"] [data-field="account"]')).toHaveAttribute('data-changed', 'true');
-    await expect(page.getByTestId('cannot-verify')).toHaveAttribute('data-reason', 'is_requester');
-    await app.axe('j4-bank-change-review');
-    await app.shot('j4-review');
-
-    const response = await appRequest(page, `${new URL(page.url()).pathname}/verify`, {
-      data: { method: 'callback_known_phone', checklist: { called_known_number: true, confirmed_holder_name: true, confirmed_last4: true, confirmed_request_origin: true }, note: 'Self verification attempt' },
-    });
-    expect(response.status()).toBe(403);
-
-    await page.goto(vendorUrl);
-    await expect(page.getByTestId('vendor-pending-change')).toBeVisible();
   });
 
   test('J4 records of another workspace cannot be opened or decided by ID', { tag: '@flow' }, async ({ page, openSession }) => {
