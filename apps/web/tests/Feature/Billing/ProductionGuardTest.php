@@ -44,6 +44,19 @@ it('does not guard non-production environments', function (): void {
     expect(fn () => bootGuard())->not->toThrow(RuntimeException::class);
 });
 
+it('skips the guard for build-time console commands', function (): void {
+    config(['billing.driver' => 'fake', 'internal.keys' => ['worker' => null, 'ai' => null]]);
+    app()['env'] = 'production';
+    $argv = $_SERVER['argv'];
+    $_SERVER['argv'] = ['artisan', 'package:discover', '--ansi'];
+
+    try {
+        expect(fn () => bootGuard())->not->toThrow(RuntimeException::class);
+    } finally {
+        $_SERVER['argv'] = $argv;
+    }
+});
+
 it('hides the fake checkout in production unless explicitly allowed', function (): void {
     $this->signInMember(WorkspaceRole::Owner);
     app()['env'] = 'production';

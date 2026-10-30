@@ -46,6 +46,8 @@ use Stripe\StripeClient;
 
 class AppServiceProvider extends ServiceProvider
 {
+    private const array BUILD_COMMANDS = ['package:discover', 'vendor:publish', 'wayfinder:generate'];
+
     public function register(): void
     {
         $this->app->singleton(Vite::class, DevServerVite::class);
@@ -104,7 +106,7 @@ class AppServiceProvider extends ServiceProvider
 
     public function guardProductionConfiguration(): void
     {
-        if (! $this->app->isProduction()) {
+        if (! $this->app->isProduction() || self::runningBuildCommand()) {
             return;
         }
 
@@ -121,6 +123,11 @@ class AppServiceProvider extends ServiceProvider
         if ($problems !== []) {
             throw new \RuntimeException("Insecure production configuration:\n  - ".implode("\n  - ", $problems));
         }
+    }
+
+    public static function runningBuildCommand(): bool
+    {
+        return PHP_SAPI === 'cli' && in_array($_SERVER['argv'][1] ?? null, self::BUILD_COMMANDS, true);
     }
 
     protected function configureDefaults(): void
