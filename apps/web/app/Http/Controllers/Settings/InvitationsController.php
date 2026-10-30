@@ -13,12 +13,13 @@ use App\Support\Flash;
 use App\Tenancy\CurrentWorkspace;
 use App\Workspaces\InvitationService;
 use App\Workspaces\WorkspaceException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 final class InvitationsController extends Controller
 {
-    public function store(InviteMemberRequest $request, CurrentWorkspace $current, InvitationService $invitations): RedirectResponse
+    public function store(InviteMemberRequest $request, CurrentWorkspace $current, InvitationService $invitations): RedirectResponse|JsonResponse
     {
         $workspace = $current->get();
         abort_if($workspace === null, 404);
@@ -29,6 +30,10 @@ final class InvitationsController extends Controller
         try {
             $invitations->invite($workspace, $user, $email, $request->role());
         } catch (WorkspaceException $exception) {
+            if ($request->expectsJson() && ! $request->header('X-Inertia')) {
+                return response()->json(['ok' => false, 'error' => $exception->reason, 'message' => $exception->userMessage()], 403);
+            }
+
             Flash::errorMessage($exception->userMessage());
 
             return back();

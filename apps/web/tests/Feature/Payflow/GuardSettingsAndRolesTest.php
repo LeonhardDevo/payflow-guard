@@ -125,6 +125,8 @@ it('updates Guard settings with step-up and flags loosening changes as critical'
 it('lets only owners grant privileged roles, with step-up, trust delay and alerts', function (): void {
     $this->actingAs($this->olga)->withSession(Guard::stepUp())->post(route('settings.members.invitations.store'), ['email' => 'new@payflow.test', 'role' => 'approver'])
         ->assertRedirect();
+    $this->actingAs($this->olga)->withSession(Guard::stepUp())->postJson(route('settings.members.invitations.store'), ['email' => 'new@payflow.test', 'role' => 'approver'])
+        ->assertStatus(403)->assertJsonPath('error', 'insufficient_role');
     expect(WorkspaceInvitation::query()->count())->toBe(0);
 
     $this->flushSession();
