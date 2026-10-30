@@ -109,6 +109,17 @@ final class BotController extends Controller
 
             $amount = MoneyFormatter::format($model->amount_minor, $model->currency, app()->getLocale());
 
+            if (! $approve && ! (bool) $data['confirmed']) {
+                return [
+                    'ok' => false,
+                    'code' => 'reason_required',
+                    'status' => $model->status->value,
+                    'number' => $model->number,
+                    'text_html' => (string) __('payflow.bot.reject_reason', ['number' => e($model->number)]),
+                    'buttons' => [],
+                ];
+            }
+
             if (! (bool) $data['confirmed']) {
                 return [
                     'ok' => false,

@@ -898,6 +898,7 @@ PDF во вложении. Если нужен номер заказа (PO) ил
         'remind_preview' => 'Отправить напоминание (:tone) по счёту :number (:client)?'."\n".'Тема: :subject',
         'reminder_queued' => 'Напоминание по счёту :number поставлено в очередь.',
         'confirm_approve' => 'Согласовать :number — :amount → :vendor (•••• :last4)?',
+        'reject_reason' => 'Ответьте на это сообщение и укажите причину отклонения :number.',
         'approved_ready' => 'Согласовано — :count/:required, можно проводить оплату.',
         'approved_waiting' => 'Согласовано — :count/:required.',
         'more_needed' => 'Нужен ещё :count согласующий.|Нужны ещё :count согласующих.|Нужно ещё :count согласующих.',

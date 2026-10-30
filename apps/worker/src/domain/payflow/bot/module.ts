@@ -11,7 +11,6 @@ import { PAYFLOW_MESSAGES } from './messages.js';
 export const REPLY_TTL_S = 600;
 export const MAX_COMMENT_LENGTH = 500;
 export const INVOICE_NUMBER_RE = /^[A-Za-zА-Яа-яЁё]{1,5}-\d{4}-\d{3,5}$/u;
-const DOCUMENT_NUMBER_RE = /\b[A-ZА-Я]{1,5}-\d{4}-\d{3,5}\b/u;
 const FP8_RE = /^[0-9a-f]{8}$/;
 
 export const PF_ACTIONS = {
@@ -135,14 +134,22 @@ class PayflowBot {
   async askRejectReason(ctx: BotContext, action: StoredAction): Promise<void> {
     const target = payoutArg(action);
     const chat = ctx.chat;
-    if (!target || !chat) {
+    const from = ctx.from;
+    if (!target || !chat || !from) {
       await this.invalidButton(ctx);
+      return;
+    }
+    const result = await this.call(ctx, () =>
+      this.deps.api.payoutDecision(target.payoutId, { telegram_user_id: from.id, decision: 'reject', fp8: target.fp8, confirmed: false }, ctx.requestId),
+    );
+    if (!result) return;
+    if (isNotLinked(result) || result.code !== 'reason_required') {
+      await this.show(ctx, result, null, 'edit', action);
       return;
     }
     const pending: PendingReply = { kind: 'reject', payout_id: target.payoutId, fp8: target.fp8 };
     await this.deps.cache.set(replyKey(chat.id), JSON.stringify(pending), REPLY_TTL_S);
-    const source = ctx.callbackQuery?.message && 'text' in ctx.callbackQuery.message ? (ctx.callbackQuery.message.text ?? '') : '';
-    const number = DOCUMENT_NUMBER_RE.exec(source)?.[0];
+    const number = result.number;
     const prompt = number ? ctx.t('pf.reject.prompt', { number }) : ctx.t('pf.reject.prompt_generic');
     await ctx.reply(escapeHtml(prompt), {
       parse_mode: 'HTML',

@@ -70,6 +70,8 @@ it('keeps high-risk payouts web-only and rejects through Telegram with a comment
 
     decision($this, $this->payout->id, ['confirmed' => true])->assertOk()->assertJsonPath('code', 'web_only')
         ->assertJsonPath('buttons.0.url', route('payouts.show', $this->payout->id));
+    decision($this, $this->payout->id, ['decision' => 'reject'])
+        ->assertOk()->assertJsonPath('code', 'reason_required')->assertJsonPath('number', $this->payout->number);
     decision($this, $this->payout->id, ['decision' => 'reject', 'confirmed' => true, 'comment' => 'Duplicate of the October invoice'])
         ->assertOk()->assertJsonPath('ok', true)->assertJsonPath('status', 'rejected');
 });

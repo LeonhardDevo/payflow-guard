@@ -166,9 +166,11 @@ describe('payout decisions through stored actions', () => {
 
   it('collects the rejection reason through a ForceReply and then lets other text reach the assistant', async () => {
     const list = await approvalsMessage();
+    api.payoutDecision.mockResolvedValueOnce(view('Reply to this message with the reason for rejecting PO-2026-0089.', [], { ok: false, code: 'reason_required', number: 'PO-2026-0089' }));
     const prompt = await sendDev(server, { from: DMITRY, callback_data: callbackFor(list, 'Reject') });
+    expect(api.payoutDecision).toHaveBeenLastCalledWith(89, { telegram_user_id: DMITRY.id, decision: 'reject', fp8: '1a2b3c4d', confirmed: false }, expect.any(String));
     const ask = messages(prompt)[0]!;
-    expect(ask.text).toBe('Ответьте на это сообщение и укажите причину отклонения выплаты.');
+    expect(ask.text).toBe('Ответьте на это сообщение и укажите причину отклонения PO-2026-0089.');
     expect(ask.reply_markup).toMatchObject({ force_reply: true });
     expect(await cache.get(replyKey(DMITRY.id))).toBe(JSON.stringify({ kind: 'reject', payout_id: 89, fp8: '1a2b3c4d' }));
 

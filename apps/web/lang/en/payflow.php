@@ -898,6 +898,7 @@ Thank you!
         'remind_preview' => 'Send a :tone reminder for :number (:client)?'."\n".'Subject: :subject',
         'reminder_queued' => 'Reminder for :number queued.',
         'confirm_approve' => 'Approve :number — :amount to :vendor (•••• :last4)?',
+        'reject_reason' => 'Reply with the reason for rejecting :number.',
         'approved_ready' => 'Approved — :count/:required, ready to release.',
         'approved_waiting' => 'Approved — :count/:required.',
         'more_needed' => 'Waiting for :count more approver.|Waiting for :count more approvers.',

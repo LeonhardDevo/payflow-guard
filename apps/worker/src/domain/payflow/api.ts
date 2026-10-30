@@ -97,6 +97,7 @@ export const botViewSchema = z
     ok: z.boolean().optional(),
     code: z.string().min(1).max(64).nullish(),
     status: z.string().nullish(),
+    number: z.string().min(1).max(64).optional(),
   })
   .passthrough();
 export type BotView = z.infer<typeof botViewSchema>;
@@ -105,6 +106,7 @@ export type BotResult = BotView | { code: 'not_linked' };
 
 export const DECISION_CODES = [
   'confirm_required',
+  'reason_required',
   'web_only',
   'is_requester',
   'already_decided',
