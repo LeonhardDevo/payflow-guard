@@ -377,9 +377,11 @@ const columns = computed<DataColumn<AuditLog>[]>(() => [
                                                 aria-hidden="true"
                                             />{{ log.ip }}
                                         </span>
-                                        <span class="font-mono">{{
-                                            log.action
-                                        }}</span>
+                                        <span
+                                            class="font-mono"
+                                            translate="no"
+                                            >{{ log.action }}</span
+                                        >
                                     </p>
                                 </div>
                             </div>

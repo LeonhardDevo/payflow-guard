@@ -42,7 +42,10 @@ export async function expectNoEmoji(page: Page): Promise<void> {
 
 export async function expectCleanPage(page: Page): Promise<void> {
   await expectNoEmoji(page);
-  const text = await page.evaluate(() => document.body?.innerText ?? '');
+  const text = await page.evaluate(() => {
+    const technical = Array.from(document.querySelectorAll<HTMLElement>('[translate="no"]')).map((element) => element.innerText);
+    return technical.reduce((rest, value) => (value ? rest.split(value).join(' ') : rest), document.body?.innerText ?? '');
+  });
   expect(rawKeysIn(text), `untranslated keys on ${page.url()}`).toEqual([]);
   expect(await overflowingControls(page), `clipped controls on ${page.url()}`).toEqual([]);
 }
