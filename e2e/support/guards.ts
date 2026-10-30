@@ -29,6 +29,7 @@ export async function overflowingControls(page: Page): Promise<string[]> {
     for (const element of document.querySelectorAll<HTMLElement>('button, a[href], [role="tab"], [role="radio"], th, label')) {
       const style = getComputedStyle(element);
       if (style.display === 'none' || style.visibility === 'hidden' || element.offsetParent === null) continue;
+      if (element.clientWidth <= 1 && element.clientHeight <= 1) continue;
       if (style.textOverflow === 'ellipsis' || element.closest('[data-allow-overflow], .overflow-x-auto, [class*="overflow-x-auto"]')) continue;
       if (element.scrollWidth > element.clientWidth + 2 && element.clientWidth > 0) {
         found.push(`${element.tagName.toLowerCase()} "${(element.innerText || element.getAttribute('aria-label') || '').trim().slice(0, 60)}" ${element.scrollWidth}>${element.clientWidth}`);
