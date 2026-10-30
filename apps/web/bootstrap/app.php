@@ -80,7 +80,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->respond(function (SymfonyResponse $response, Throwable $exception, Request $request): SymfonyResponse {
             $status = $response->getStatusCode();
 
-            if (! in_array($status, [419, 429, 503], true) || $request->header('X-Inertia') === null || $request->is('api/*', 'internal/*')) {
+            if (! in_array($status, [419, 429, 503], true) || $request->header('X-Inertia') === null || $request->isMethodSafe() || $request->is('api/*', 'internal/*')) {
                 return $response;
             }
 
