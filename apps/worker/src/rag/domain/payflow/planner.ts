@@ -34,7 +34,7 @@ const CLARIFY: Record<Lang, string> = {
   ru: 'Уточните, пожалуйста, о каком клиенте или счёте идёт речь — укажите название клиента или номер счёта.',
 };
 
-const OPEN_APP: Record<Lang, string> = { en: 'Open PayFlow Guard', ru: 'Открыть PayFlow Guard' };
+const OPEN_APP: Record<Lang, string> = { en: 'Open in app', ru: 'Открыть в приложении' };
 
 export function refusalActions(code: string, lang: Lang, publicWebUrl: string): ChatAction[] {
   if (code !== 'mutation_not_allowed' && code !== 'secret_requested') return [];

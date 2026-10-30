@@ -117,6 +117,17 @@ type ResolvedAction = {
 
 const SERVER_ACTIONS = new Set(['escalate']);
 
+function internalPath(url: string): string | null {
+    if (url.startsWith('/')) return url;
+    try {
+        const parsed = new URL(url, window.location.origin);
+        if (parsed.origin !== window.location.origin) return null;
+        return `${parsed.pathname}${parsed.search}${parsed.hash}`;
+    } catch {
+        return null;
+    }
+}
+
 const refusedByPolicy = computed(
     () => props.response.refusal_reason === 'policy',
 );
@@ -142,11 +153,15 @@ const actions = computed<ResolvedAction[]>(() =>
                   ? action.payload.question
                   : null;
 
-        if (url && url.startsWith('/')) {
-            return [{ action, external: false, run: () => router.visit(url) }];
+        const internal = url ? internalPath(url) : null;
+
+        if (internal) {
+            return [
+                { action, external: false, run: () => router.visit(internal) },
+            ];
         }
 
-        if (url && /^https:\/\//i.test(url)) {
+        if (url && /^https?:\/\//i.test(url)) {
             return [
                 {
                     action,
