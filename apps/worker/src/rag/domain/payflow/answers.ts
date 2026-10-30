@@ -78,12 +78,21 @@ function percent(value: unknown, lang: Lang): string {
 
 const T = (lang: Lang, en: string, ru: string): string => (lang === 'ru' ? ru : en);
 
+function wordStart(text: string, keyword: string): boolean {
+  let index = text.indexOf(keyword);
+  while (index !== -1) {
+    if (index === 0 || !/[\p{L}\p{N}]/u.test(text[index - 1] ?? '')) return true;
+    index = text.indexOf(keyword, index + 1);
+  }
+  return false;
+}
+
 export function quote(sources: readonly ParsedSource[], keywords: readonly string[], prefer: (title: string) => boolean = () => false): string | null {
   const ordered = [...sources.filter((source) => prefer(source.title)), ...sources.filter((source) => !prefer(source.title))];
   for (const source of ordered) {
     for (const sentence of splitSentences(source.content)) {
       const lower = sentence.toLowerCase().replace(/ё/g, 'е');
-      if (sentence.length >= 20 && keywords.some((keyword) => lower.includes(keyword))) {
+      if (sentence.length >= 20 && keywords.some((keyword) => wordStart(lower, keyword))) {
         return `${sentence.trim().replace(/^[-*#>\s]+/, '')} [${source.ref}]`;
       }
     }
@@ -224,6 +233,15 @@ function renderSchedule(data: Obj, lang: Lang, sources: readonly ParsedSource[])
   const code = recommendation ? str(recommendation.code) : '';
   const finalTone = items.some((item) => item.tone === 'final');
   if (code === 'call' || code === 'escalate' || finalTone) {
+    if (code !== 'call') {
+      lines.push(
+        T(
+          lang,
+          'Per the collections policy, also call the client: e-mail reminders alone are no longer enough at this stage.',
+          'По регламенту взыскания дополнительно позвоните клиенту: на этом этапе одних писем уже недостаточно.',
+        ),
+      );
+    }
     const cited = quote(sources, ['call', 'phone', 'позвон', 'звон', 'телефон'], (title) => /polic|политик/i.test(title));
     if (cited) lines.push(cited);
   }
