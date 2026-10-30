@@ -1,0 +1,42 @@
+{
+  "name": "platform-root",
+  "private": true,
+  "type": "module",
+  "description": "Root developer entry point: setup, dev, test, lint, e2e and production images for web (Laravel) and the Node service (queues, Telegram bot, RAG API).",
+  "engines": {
+    "node": ">=24.11.0"
+  },
+  "scripts": {
+    "setup": "node scripts/tasks.ts setup",
+    "dev": "node scripts/tasks.ts dev",
+    "dev:web": "node scripts/tasks.ts dev --only web,web-internal,vite",
+    "dev:worker": "node scripts/tasks.ts dev --only worker",
+    "build": "node scripts/tasks.ts build",
+    "test": "node scripts/tasks.ts test",
+    "test:web": "node scripts/tasks.ts test --only web,web-ui",
+    "test:worker": "node scripts/tasks.ts test --only worker",
+    "test:scripts": "node --test \"scripts/**/*.test.ts\"",
+    "e2e": "npm --prefix e2e run test --",
+    "e2e:install": "npm --prefix e2e ci && npm --prefix e2e run browsers",
+    "e2e:ui": "npm --prefix e2e run ui",
+    "e2e:report": "npm --prefix e2e run report",
+    "lint": "node scripts/tasks.ts lint",
+    "lint:fix": "node scripts/tasks.ts lint --fix",
+    "typecheck:scripts": "tsc -p scripts/tsconfig.json",
+    "stop": "node scripts/tasks.ts stop",
+    "doctor": "node scripts/tasks.ts doctor",
+    "env:sync": "node scripts/env-sync.ts",
+    "env:check": "node scripts/env-sync.ts --check",
+    "infra:up": "docker compose --env-file scripts/project.env up -d --wait --wait-timeout 180",
+    "infra:down": "docker compose --env-file scripts/project.env down",
+    "infra:logs": "docker compose --env-file scripts/project.env logs -f --tail=100",
+    "prod:build": "docker compose -f docker-compose.prod.yml --env-file infra/env/.env.compose build",
+    "prod:up": "docker compose -f docker-compose.prod.yml --env-file infra/env/.env.compose up -d --build --wait --wait-timeout 600",
+    "prod:down": "docker compose -f docker-compose.prod.yml --env-file infra/env/.env.compose down"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.2",
+    "concurrently": "10.0.6",
+    "typescript": "^5.9.3"
+  }
+}

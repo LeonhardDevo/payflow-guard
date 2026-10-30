@@ -1,0 +1,87 @@
+{
+    "roles": [
+        "owner",
+        "admin",
+        "finance",
+        "approver",
+        "member",
+        "external_approver"
+    ],
+    "abilities": {
+        "workspace.manage": ["owner", "admin"],
+        "workspace.delete": ["owner"],
+        "members.manage": ["owner", "admin"],
+        "billing.view": ["owner", "admin"],
+        "billing.manage": ["owner"],
+        "audit.view": ["owner", "admin", "finance", "approver"],
+        "knowledge.view": ["owner", "admin", "finance", "approver", "member"],
+        "knowledge.manage": ["owner", "admin", "finance"],
+        "assistant.use": ["owner", "admin", "finance", "approver", "member"],
+        "assistant.history": ["owner", "admin", "finance"],
+        "integrations.manage": [
+            "owner",
+            "admin",
+            "finance",
+            "approver",
+            "member",
+            "external_approver"
+        ],
+        "clients.view": ["owner", "admin", "finance", "approver", "member"],
+        "invoices.view": ["owner", "admin", "finance", "approver", "member"],
+        "analytics.view": ["owner", "admin", "finance", "approver", "member"],
+        "clients.manage": ["owner", "admin", "finance", "member"],
+        "invoices.manage": ["owner", "admin", "finance", "member"],
+        "invoices.record_payment": ["owner", "admin", "finance"],
+        "invoices.write_off": ["owner", "admin", "finance"],
+        "invoices.apply_late_fee": ["owner", "admin", "finance"],
+        "reminders.send": ["owner", "admin", "finance", "member"],
+        "reminders.configure": ["owner", "admin", "finance"],
+        "imports.run": ["owner", "admin", "finance"],
+        "privacy.manage": ["owner", "admin"],
+        "payments.configure": ["owner", "admin"],
+        "vendors.view": ["owner", "admin", "finance", "approver"],
+        "payouts.view": [
+            "owner",
+            "admin",
+            "finance",
+            "approver",
+            "external_approver"
+        ],
+        "vendors.manage": ["owner", "admin", "finance"],
+        "bank_details.reveal": ["owner", "finance", "approver"],
+        "bank_changes.request": ["owner", "admin", "finance"],
+        "bank_changes.verify": [
+            "owner",
+            "admin",
+            "approver",
+            "external_approver"
+        ],
+        "payouts.create": ["owner", "admin", "finance"],
+        "payouts.approve": ["owner", "admin", "approver", "external_approver"],
+        "payouts.release": ["owner", "finance"],
+        "guard.alerts": ["owner", "admin", "finance", "approver"],
+        "guard.configure": ["owner"]
+    },
+    "guard_privileged": [
+        "owner",
+        "admin",
+        "finance",
+        "approver",
+        "external_approver"
+    ],
+    "assignable": {
+        "owner": [
+            "owner",
+            "admin",
+            "finance",
+            "approver",
+            "member",
+            "external_approver"
+        ],
+        "admin": ["member"],
+        "finance": ["member"],
+        "approver": ["member"],
+        "member": [],
+        "external_approver": []
+    }
+}

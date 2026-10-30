@@ -1,0 +1,24 @@
+# Build context = repository root; only apps/web and its infra files are needed.
+**
+!infra/docker/web/**
+!apps/web/**
+
+apps/web/.env
+apps/web/.env.*
+!apps/web/.env.example
+apps/web/node_modules
+apps/web/vendor
+apps/web/public/build
+apps/web/public/hot
+apps/web/storage/logs/*
+apps/web/storage/framework/cache/data/*
+apps/web/storage/framework/sessions/*
+apps/web/storage/framework/views/*
+apps/web/storage/app/private/*
+apps/web/storage/*.key
+apps/web/bootstrap/cache/*.php
+apps/web/tests
+apps/web/.github
+apps/web/HANDOFF.md
+**/.DS_Store
+**/Thumbs.db

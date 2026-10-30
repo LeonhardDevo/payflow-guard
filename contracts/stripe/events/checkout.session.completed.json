@@ -1,0 +1,27 @@
+{
+  "id": "evt_1QfixtureCheckout0001",
+  "object": "event",
+  "api_version": "2025-09-30.clover",
+  "created": 1767225600,
+  "livemode": false,
+  "pending_webhooks": 1,
+  "request": { "id": null, "idempotency_key": "checkout-fixture" },
+  "type": "checkout.session.completed",
+  "data": {
+    "object": {
+      "id": "cs_test_fixture0001",
+      "object": "checkout.session",
+      "mode": "subscription",
+      "status": "complete",
+      "payment_status": "paid",
+      "customer": "cus_Fixture0001",
+      "subscription": "sub_Fixture0001",
+      "client_reference_id": "__WORKSPACE_ID__",
+      "amount_total": 4900,
+      "currency": "usd",
+      "livemode": false,
+      "metadata": { "workspace_id": "__WORKSPACE_ID__", "plan": "pro", "interval": "month", "currency": "USD" },
+      "created": 1767225590
+    }
+  }
+}

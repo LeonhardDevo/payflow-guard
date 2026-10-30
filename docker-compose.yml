@@ -1,0 +1,64 @@
+# Local development infrastructure: Postgres 17 + pgvector, Redis 7, Mailpit.
+#
+#   docker compose up -d --wait        (or: npm run infra:up)
+#
+# Ports follow PLATFORM.md §2 so all three products can run side by side. The
+# ${VAR:-default} values match scripts/project.env; the root scripts pass that
+# file as `--env-file`, so a cloned product edits project.env (and the defaults
+# below, for people running plain `docker compose`).
+# Never point an app at the machine's native Postgres (5432) or Redis 3 (6379).
+name: ${COMPOSE_PROJECT:-payflow}
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-app}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-app}
+      POSTGRES_DB: ${DB_NAME:-payflow}
+    ports:
+      - "${PG_PORT:-5441}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Creates <db>_test and <db>_e2e, extensions (vector, pg_trgm, unaccent) and the rag/worker schemas.
+      - ./infra/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-app} -d ${DB_NAME:-payflow}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    image: redis:7.4-alpine
+    restart: unless-stopped
+    # noeviction: BullMQ requires that queue keys are never evicted.
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory-policy", "noeviction"]
+    ports:
+      - "${REDIS_PORT:-6391}:6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  # SMTP sink + web UI/API; the image ships its own healthcheck (`/mailpit readyz`).
+  # The e2e suite reads verification/invitation mails through its REST API.
+  mailpit:
+    image: axllent/mailpit:latest
+    restart: unless-stopped
+    ports:
+      - "${MAIL_SMTP_PORT:-1031}:1025"
+      - "${MAIL_UI_PORT:-8131}:8025"
+
+  stripe-mock:
+    image: stripe/stripe-mock:v0.206.0
+    restart: unless-stopped
+    ports:
+      - "${STRIPE_MOCK_PORT:-12111}:12111"
+
+volumes:
+  pgdata:
+  redisdata:

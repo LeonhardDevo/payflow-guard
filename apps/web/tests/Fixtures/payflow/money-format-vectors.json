@@ -1,0 +1,1022 @@
+[
+    {
+        "locale": "en",
+        "currency": "USD",
+        "minor": 0,
+        "expected": "$0.00"
+    },
+    {
+        "locale": "en",
+        "currency": "USD",
+        "minor": 5,
+        "expected": "$0.05"
+    },
+    {
+        "locale": "en",
+        "currency": "USD",
+        "minor": 123450,
+        "expected": "$1,234.50"
+    },
+    {
+        "locale": "en",
+        "currency": "USD",
+        "minor": 123456789,
+        "expected": "$1,234,567.89"
+    },
+    {
+        "locale": "en",
+        "currency": "USD",
+        "minor": -1250,
+        "expected": "-$12.50"
+    },
+    {
+        "locale": "en",
+        "currency": "EUR",
+        "minor": 0,
+        "expected": "€0.00"
+    },
+    {
+        "locale": "en",
+        "currency": "EUR",
+        "minor": 5,
+        "expected": "€0.05"
+    },
+    {
+        "locale": "en",
+        "currency": "EUR",
+        "minor": 123450,
+        "expected": "€1,234.50"
+    },
+    {
+        "locale": "en",
+        "currency": "EUR",
+        "minor": 123456789,
+        "expected": "€1,234,567.89"
+    },
+    {
+        "locale": "en",
+        "currency": "EUR",
+        "minor": -1250,
+        "expected": "-€12.50"
+    },
+    {
+        "locale": "en",
+        "currency": "RUB",
+        "minor": 0,
+        "expected": "RUB 0.00"
+    },
+    {
+        "locale": "en",
+        "currency": "RUB",
+        "minor": 5,
+        "expected": "RUB 0.05"
+    },
+    {
+        "locale": "en",
+        "currency": "RUB",
+        "minor": 123450,
+        "expected": "RUB 1,234.50"
+    },
+    {
+        "locale": "en",
+        "currency": "RUB",
+        "minor": 123456789,
+        "expected": "RUB 1,234,567.89"
+    },
+    {
+        "locale": "en",
+        "currency": "RUB",
+        "minor": -1250,
+        "expected": "-RUB 12.50"
+    },
+    {
+        "locale": "en",
+        "currency": "GBP",
+        "minor": 0,
+        "expected": "£0.00"
+    },
+    {
+        "locale": "en",
+        "currency": "GBP",
+        "minor": 5,
+        "expected": "£0.05"
+    },
+    {
+        "locale": "en",
+        "currency": "GBP",
+        "minor": 123450,
+        "expected": "£1,234.50"
+    },
+    {
+        "locale": "en",
+        "currency": "GBP",
+        "minor": 123456789,
+        "expected": "£1,234,567.89"
+    },
+    {
+        "locale": "en",
+        "currency": "GBP",
+        "minor": -1250,
+        "expected": "-£12.50"
+    },
+    {
+        "locale": "en",
+        "currency": "CAD",
+        "minor": 0,
+        "expected": "CA$0.00"
+    },
+    {
+        "locale": "en",
+        "currency": "CAD",
+        "minor": 5,
+        "expected": "CA$0.05"
+    },
+    {
+        "locale": "en",
+        "currency": "CAD",
+        "minor": 123450,
+        "expected": "CA$1,234.50"
+    },
+    {
+        "locale": "en",
+        "currency": "CAD",
+        "minor": 123456789,
+        "expected": "CA$1,234,567.89"
+    },
+    {
+        "locale": "en",
+        "currency": "CAD",
+        "minor": -1250,
+        "expected": "-CA$12.50"
+    },
+    {
+        "locale": "en",
+        "currency": "AUD",
+        "minor": 0,
+        "expected": "A$0.00"
+    },
+    {
+        "locale": "en",
+        "currency": "AUD",
+        "minor": 5,
+        "expected": "A$0.05"
+    },
+    {
+        "locale": "en",
+        "currency": "AUD",
+        "minor": 123450,
+        "expected": "A$1,234.50"
+    },
+    {
+        "locale": "en",
+        "currency": "AUD",
+        "minor": 123456789,
+        "expected": "A$1,234,567.89"
+    },
+    {
+        "locale": "en",
+        "currency": "AUD",
+        "minor": -1250,
+        "expected": "-A$12.50"
+    },
+    {
+        "locale": "en",
+        "currency": "CHF",
+        "minor": 0,
+        "expected": "CHF 0.00"
+    },
+    {
+        "locale": "en",
+        "currency": "CHF",
+        "minor": 5,
+        "expected": "CHF 0.05"
+    },
+    {
+        "locale": "en",
+        "currency": "CHF",
+        "minor": 123450,
+        "expected": "CHF 1,234.50"
+    },
+    {
+        "locale": "en",
+        "currency": "CHF",
+        "minor": 123456789,
+        "expected": "CHF 1,234,567.89"
+    },
+    {
+        "locale": "en",
+        "currency": "CHF",
+        "minor": -1250,
+        "expected": "-CHF 12.50"
+    },
+    {
+        "locale": "en",
+        "currency": "PLN",
+        "minor": 0,
+        "expected": "PLN 0.00"
+    },
+    {
+        "locale": "en",
+        "currency": "PLN",
+        "minor": 5,
+        "expected": "PLN 0.05"
+    },
+    {
+        "locale": "en",
+        "currency": "PLN",
+        "minor": 123450,
+        "expected": "PLN 1,234.50"
+    },
+    {
+        "locale": "en",
+        "currency": "PLN",
+        "minor": 123456789,
+        "expected": "PLN 1,234,567.89"
+    },
+    {
+        "locale": "en",
+        "currency": "PLN",
+        "minor": -1250,
+        "expected": "-PLN 12.50"
+    },
+    {
+        "locale": "en",
+        "currency": "CZK",
+        "minor": 0,
+        "expected": "CZK 0.00"
+    },
+    {
+        "locale": "en",
+        "currency": "CZK",
+        "minor": 5,
+        "expected": "CZK 0.05"
+    },
+    {
+        "locale": "en",
+        "currency": "CZK",
+        "minor": 123450,
+        "expected": "CZK 1,234.50"
+    },
+    {
+        "locale": "en",
+        "currency": "CZK",
+        "minor": 123456789,
+        "expected": "CZK 1,234,567.89"
+    },
+    {
+        "locale": "en",
+        "currency": "CZK",
+        "minor": -1250,
+        "expected": "-CZK 12.50"
+    },
+    {
+        "locale": "en",
+        "currency": "SEK",
+        "minor": 0,
+        "expected": "SEK 0.00"
+    },
+    {
+        "locale": "en",
+        "currency": "SEK",
+        "minor": 5,
+        "expected": "SEK 0.05"
+    },
+    {
+        "locale": "en",
+        "currency": "SEK",
+        "minor": 123450,
+        "expected": "SEK 1,234.50"
+    },
+    {
+        "locale": "en",
+        "currency": "SEK",
+        "minor": 123456789,
+        "expected": "SEK 1,234,567.89"
+    },
+    {
+        "locale": "en",
+        "currency": "SEK",
+        "minor": -1250,
+        "expected": "-SEK 12.50"
+    },
+    {
+        "locale": "en",
+        "currency": "NOK",
+        "minor": 0,
+        "expected": "NOK 0.00"
+    },
+    {
+        "locale": "en",
+        "currency": "NOK",
+        "minor": 5,
+        "expected": "NOK 0.05"
+    },
+    {
+        "locale": "en",
+        "currency": "NOK",
+        "minor": 123450,
+        "expected": "NOK 1,234.50"
+    },
+    {
+        "locale": "en",
+        "currency": "NOK",
+        "minor": 123456789,
+        "expected": "NOK 1,234,567.89"
+    },
+    {
+        "locale": "en",
+        "currency": "NOK",
+        "minor": -1250,
+        "expected": "-NOK 12.50"
+    },
+    {
+        "locale": "en",
+        "currency": "DKK",
+        "minor": 0,
+        "expected": "DKK 0.00"
+    },
+    {
+        "locale": "en",
+        "currency": "DKK",
+        "minor": 5,
+        "expected": "DKK 0.05"
+    },
+    {
+        "locale": "en",
+        "currency": "DKK",
+        "minor": 123450,
+        "expected": "DKK 1,234.50"
+    },
+    {
+        "locale": "en",
+        "currency": "DKK",
+        "minor": 123456789,
+        "expected": "DKK 1,234,567.89"
+    },
+    {
+        "locale": "en",
+        "currency": "DKK",
+        "minor": -1250,
+        "expected": "-DKK 12.50"
+    },
+    {
+        "locale": "en",
+        "currency": "KZT",
+        "minor": 0,
+        "expected": "KZT 0.00"
+    },
+    {
+        "locale": "en",
+        "currency": "KZT",
+        "minor": 5,
+        "expected": "KZT 0.05"
+    },
+    {
+        "locale": "en",
+        "currency": "KZT",
+        "minor": 123450,
+        "expected": "KZT 1,234.50"
+    },
+    {
+        "locale": "en",
+        "currency": "KZT",
+        "minor": 123456789,
+        "expected": "KZT 1,234,567.89"
+    },
+    {
+        "locale": "en",
+        "currency": "KZT",
+        "minor": -1250,
+        "expected": "-KZT 12.50"
+    },
+    {
+        "locale": "en",
+        "currency": "GEL",
+        "minor": 0,
+        "expected": "GEL 0.00"
+    },
+    {
+        "locale": "en",
+        "currency": "GEL",
+        "minor": 5,
+        "expected": "GEL 0.05"
+    },
+    {
+        "locale": "en",
+        "currency": "GEL",
+        "minor": 123450,
+        "expected": "GEL 1,234.50"
+    },
+    {
+        "locale": "en",
+        "currency": "GEL",
+        "minor": 123456789,
+        "expected": "GEL 1,234,567.89"
+    },
+    {
+        "locale": "en",
+        "currency": "GEL",
+        "minor": -1250,
+        "expected": "-GEL 12.50"
+    },
+    {
+        "locale": "en",
+        "currency": "AMD",
+        "minor": 0,
+        "expected": "AMD 0.00"
+    },
+    {
+        "locale": "en",
+        "currency": "AMD",
+        "minor": 5,
+        "expected": "AMD 0.05"
+    },
+    {
+        "locale": "en",
+        "currency": "AMD",
+        "minor": 123450,
+        "expected": "AMD 1,234.50"
+    },
+    {
+        "locale": "en",
+        "currency": "AMD",
+        "minor": 123456789,
+        "expected": "AMD 1,234,567.89"
+    },
+    {
+        "locale": "en",
+        "currency": "AMD",
+        "minor": -1250,
+        "expected": "-AMD 12.50"
+    },
+    {
+        "locale": "en",
+        "currency": "AED",
+        "minor": 0,
+        "expected": "AED 0.00"
+    },
+    {
+        "locale": "en",
+        "currency": "AED",
+        "minor": 5,
+        "expected": "AED 0.05"
+    },
+    {
+        "locale": "en",
+        "currency": "AED",
+        "minor": 123450,
+        "expected": "AED 1,234.50"
+    },
+    {
+        "locale": "en",
+        "currency": "AED",
+        "minor": 123456789,
+        "expected": "AED 1,234,567.89"
+    },
+    {
+        "locale": "en",
+        "currency": "AED",
+        "minor": -1250,
+        "expected": "-AED 12.50"
+    },
+    {
+        "locale": "en",
+        "currency": "TRY",
+        "minor": 0,
+        "expected": "TRY 0.00"
+    },
+    {
+        "locale": "en",
+        "currency": "TRY",
+        "minor": 5,
+        "expected": "TRY 0.05"
+    },
+    {
+        "locale": "en",
+        "currency": "TRY",
+        "minor": 123450,
+        "expected": "TRY 1,234.50"
+    },
+    {
+        "locale": "en",
+        "currency": "TRY",
+        "minor": 123456789,
+        "expected": "TRY 1,234,567.89"
+    },
+    {
+        "locale": "en",
+        "currency": "TRY",
+        "minor": -1250,
+        "expected": "-TRY 12.50"
+    },
+    {
+        "locale": "ru",
+        "currency": "USD",
+        "minor": 0,
+        "expected": "0,00 $"
+    },
+    {
+        "locale": "ru",
+        "currency": "USD",
+        "minor": 5,
+        "expected": "0,05 $"
+    },
+    {
+        "locale": "ru",
+        "currency": "USD",
+        "minor": 123450,
+        "expected": "1 234,50 $"
+    },
+    {
+        "locale": "ru",
+        "currency": "USD",
+        "minor": 123456789,
+        "expected": "1 234 567,89 $"
+    },
+    {
+        "locale": "ru",
+        "currency": "USD",
+        "minor": -1250,
+        "expected": "-12,50 $"
+    },
+    {
+        "locale": "ru",
+        "currency": "EUR",
+        "minor": 0,
+        "expected": "0,00 €"
+    },
+    {
+        "locale": "ru",
+        "currency": "EUR",
+        "minor": 5,
+        "expected": "0,05 €"
+    },
+    {
+        "locale": "ru",
+        "currency": "EUR",
+        "minor": 123450,
+        "expected": "1 234,50 €"
+    },
+    {
+        "locale": "ru",
+        "currency": "EUR",
+        "minor": 123456789,
+        "expected": "1 234 567,89 €"
+    },
+    {
+        "locale": "ru",
+        "currency": "EUR",
+        "minor": -1250,
+        "expected": "-12,50 €"
+    },
+    {
+        "locale": "ru",
+        "currency": "RUB",
+        "minor": 0,
+        "expected": "0,00 ₽"
+    },
+    {
+        "locale": "ru",
+        "currency": "RUB",
+        "minor": 5,
+        "expected": "0,05 ₽"
+    },
+    {
+        "locale": "ru",
+        "currency": "RUB",
+        "minor": 123450,
+        "expected": "1 234,50 ₽"
+    },
+    {
+        "locale": "ru",
+        "currency": "RUB",
+        "minor": 123456789,
+        "expected": "1 234 567,89 ₽"
+    },
+    {
+        "locale": "ru",
+        "currency": "RUB",
+        "minor": -1250,
+        "expected": "-12,50 ₽"
+    },
+    {
+        "locale": "ru",
+        "currency": "GBP",
+        "minor": 0,
+        "expected": "0,00 £"
+    },
+    {
+        "locale": "ru",
+        "currency": "GBP",
+        "minor": 5,
+        "expected": "0,05 £"
+    },
+    {
+        "locale": "ru",
+        "currency": "GBP",
+        "minor": 123450,
+        "expected": "1 234,50 £"
+    },
+    {
+        "locale": "ru",
+        "currency": "GBP",
+        "minor": 123456789,
+        "expected": "1 234 567,89 £"
+    },
+    {
+        "locale": "ru",
+        "currency": "GBP",
+        "minor": -1250,
+        "expected": "-12,50 £"
+    },
+    {
+        "locale": "ru",
+        "currency": "CAD",
+        "minor": 0,
+        "expected": "0,00 CA$"
+    },
+    {
+        "locale": "ru",
+        "currency": "CAD",
+        "minor": 5,
+        "expected": "0,05 CA$"
+    },
+    {
+        "locale": "ru",
+        "currency": "CAD",
+        "minor": 123450,
+        "expected": "1 234,50 CA$"
+    },
+    {
+        "locale": "ru",
+        "currency": "CAD",
+        "minor": 123456789,
+        "expected": "1 234 567,89 CA$"
+    },
+    {
+        "locale": "ru",
+        "currency": "CAD",
+        "minor": -1250,
+        "expected": "-12,50 CA$"
+    },
+    {
+        "locale": "ru",
+        "currency": "AUD",
+        "minor": 0,
+        "expected": "0,00 A$"
+    },
+    {
+        "locale": "ru",
+        "currency": "AUD",
+        "minor": 5,
+        "expected": "0,05 A$"
+    },
+    {
+        "locale": "ru",
+        "currency": "AUD",
+        "minor": 123450,
+        "expected": "1 234,50 A$"
+    },
+    {
+        "locale": "ru",
+        "currency": "AUD",
+        "minor": 123456789,
+        "expected": "1 234 567,89 A$"
+    },
+    {
+        "locale": "ru",
+        "currency": "AUD",
+        "minor": -1250,
+        "expected": "-12,50 A$"
+    },
+    {
+        "locale": "ru",
+        "currency": "CHF",
+        "minor": 0,
+        "expected": "0,00 CHF"
+    },
+    {
+        "locale": "ru",
+        "currency": "CHF",
+        "minor": 5,
+        "expected": "0,05 CHF"
+    },
+    {
+        "locale": "ru",
+        "currency": "CHF",
+        "minor": 123450,
+        "expected": "1 234,50 CHF"
+    },
+    {
+        "locale": "ru",
+        "currency": "CHF",
+        "minor": 123456789,
+        "expected": "1 234 567,89 CHF"
+    },
+    {
+        "locale": "ru",
+        "currency": "CHF",
+        "minor": -1250,
+        "expected": "-12,50 CHF"
+    },
+    {
+        "locale": "ru",
+        "currency": "PLN",
+        "minor": 0,
+        "expected": "0,00 PLN"
+    },
+    {
+        "locale": "ru",
+        "currency": "PLN",
+        "minor": 5,
+        "expected": "0,05 PLN"
+    },
+    {
+        "locale": "ru",
+        "currency": "PLN",
+        "minor": 123450,
+        "expected": "1 234,50 PLN"
+    },
+    {
+        "locale": "ru",
+        "currency": "PLN",
+        "minor": 123456789,
+        "expected": "1 234 567,89 PLN"
+    },
+    {
+        "locale": "ru",
+        "currency": "PLN",
+        "minor": -1250,
+        "expected": "-12,50 PLN"
+    },
+    {
+        "locale": "ru",
+        "currency": "CZK",
+        "minor": 0,
+        "expected": "0,00 CZK"
+    },
+    {
+        "locale": "ru",
+        "currency": "CZK",
+        "minor": 5,
+        "expected": "0,05 CZK"
+    },
+    {
+        "locale": "ru",
+        "currency": "CZK",
+        "minor": 123450,
+        "expected": "1 234,50 CZK"
+    },
+    {
+        "locale": "ru",
+        "currency": "CZK",
+        "minor": 123456789,
+        "expected": "1 234 567,89 CZK"
+    },
+    {
+        "locale": "ru",
+        "currency": "CZK",
+        "minor": -1250,
+        "expected": "-12,50 CZK"
+    },
+    {
+        "locale": "ru",
+        "currency": "SEK",
+        "minor": 0,
+        "expected": "0,00 SEK"
+    },
+    {
+        "locale": "ru",
+        "currency": "SEK",
+        "minor": 5,
+        "expected": "0,05 SEK"
+    },
+    {
+        "locale": "ru",
+        "currency": "SEK",
+        "minor": 123450,
+        "expected": "1 234,50 SEK"
+    },
+    {
+        "locale": "ru",
+        "currency": "SEK",
+        "minor": 123456789,
+        "expected": "1 234 567,89 SEK"
+    },
+    {
+        "locale": "ru",
+        "currency": "SEK",
+        "minor": -1250,
+        "expected": "-12,50 SEK"
+    },
+    {
+        "locale": "ru",
+        "currency": "NOK",
+        "minor": 0,
+        "expected": "0,00 NOK"
+    },
+    {
+        "locale": "ru",
+        "currency": "NOK",
+        "minor": 5,
+        "expected": "0,05 NOK"
+    },
+    {
+        "locale": "ru",
+        "currency": "NOK",
+        "minor": 123450,
+        "expected": "1 234,50 NOK"
+    },
+    {
+        "locale": "ru",
+        "currency": "NOK",
+        "minor": 123456789,
+        "expected": "1 234 567,89 NOK"
+    },
+    {
+        "locale": "ru",
+        "currency": "NOK",
+        "minor": -1250,
+        "expected": "-12,50 NOK"
+    },
+    {
+        "locale": "ru",
+        "currency": "DKK",
+        "minor": 0,
+        "expected": "0,00 DKK"
+    },
+    {
+        "locale": "ru",
+        "currency": "DKK",
+        "minor": 5,
+        "expected": "0,05 DKK"
+    },
+    {
+        "locale": "ru",
+        "currency": "DKK",
+        "minor": 123450,
+        "expected": "1 234,50 DKK"
+    },
+    {
+        "locale": "ru",
+        "currency": "DKK",
+        "minor": 123456789,
+        "expected": "1 234 567,89 DKK"
+    },
+    {
+        "locale": "ru",
+        "currency": "DKK",
+        "minor": -1250,
+        "expected": "-12,50 DKK"
+    },
+    {
+        "locale": "ru",
+        "currency": "KZT",
+        "minor": 0,
+        "expected": "0,00 KZT"
+    },
+    {
+        "locale": "ru",
+        "currency": "KZT",
+        "minor": 5,
+        "expected": "0,05 KZT"
+    },
+    {
+        "locale": "ru",
+        "currency": "KZT",
+        "minor": 123450,
+        "expected": "1 234,50 KZT"
+    },
+    {
+        "locale": "ru",
+        "currency": "KZT",
+        "minor": 123456789,
+        "expected": "1 234 567,89 KZT"
+    },
+    {
+        "locale": "ru",
+        "currency": "KZT",
+        "minor": -1250,
+        "expected": "-12,50 KZT"
+    },
+    {
+        "locale": "ru",
+        "currency": "GEL",
+        "minor": 0,
+        "expected": "0,00 GEL"
+    },
+    {
+        "locale": "ru",
+        "currency": "GEL",
+        "minor": 5,
+        "expected": "0,05 GEL"
+    },
+    {
+        "locale": "ru",
+        "currency": "GEL",
+        "minor": 123450,
+        "expected": "1 234,50 GEL"
+    },
+    {
+        "locale": "ru",
+        "currency": "GEL",
+        "minor": 123456789,
+        "expected": "1 234 567,89 GEL"
+    },
+    {
+        "locale": "ru",
+        "currency": "GEL",
+        "minor": -1250,
+        "expected": "-12,50 GEL"
+    },
+    {
+        "locale": "ru",
+        "currency": "AMD",
+        "minor": 0,
+        "expected": "0,00 AMD"
+    },
+    {
+        "locale": "ru",
+        "currency": "AMD",
+        "minor": 5,
+        "expected": "0,05 AMD"
+    },
+    {
+        "locale": "ru",
+        "currency": "AMD",
+        "minor": 123450,
+        "expected": "1 234,50 AMD"
+    },
+    {
+        "locale": "ru",
+        "currency": "AMD",
+        "minor": 123456789,
+        "expected": "1 234 567,89 AMD"
+    },
+    {
+        "locale": "ru",
+        "currency": "AMD",
+        "minor": -1250,
+        "expected": "-12,50 AMD"
+    },
+    {
+        "locale": "ru",
+        "currency": "AED",
+        "minor": 0,
+        "expected": "0,00 AED"
+    },
+    {
+        "locale": "ru",
+        "currency": "AED",
+        "minor": 5,
+        "expected": "0,05 AED"
+    },
+    {
+        "locale": "ru",
+        "currency": "AED",
+        "minor": 123450,
+        "expected": "1 234,50 AED"
+    },
+    {
+        "locale": "ru",
+        "currency": "AED",
+        "minor": 123456789,
+        "expected": "1 234 567,89 AED"
+    },
+    {
+        "locale": "ru",
+        "currency": "AED",
+        "minor": -1250,
+        "expected": "-12,50 AED"
+    },
+    {
+        "locale": "ru",
+        "currency": "TRY",
+        "minor": 0,
+        "expected": "0,00 TRY"
+    },
+    {
+        "locale": "ru",
+        "currency": "TRY",
+        "minor": 5,
+        "expected": "0,05 TRY"
+    },
+    {
+        "locale": "ru",
+        "currency": "TRY",
+        "minor": 123450,
+        "expected": "1 234,50 TRY"
+    },
+    {
+        "locale": "ru",
+        "currency": "TRY",
+        "minor": 123456789,
+        "expected": "1 234 567,89 TRY"
+    },
+    {
+        "locale": "ru",
+        "currency": "TRY",
+        "minor": -1250,
+        "expected": "-12,50 TRY"
+    }
+]

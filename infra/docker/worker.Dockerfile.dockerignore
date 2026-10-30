@@ -1,0 +1,11 @@
+# Build context = repository root; only apps/worker is needed.
+**
+!apps/worker/**
+
+apps/worker/.env
+apps/worker/.env.*
+!apps/worker/.env.example
+apps/worker/node_modules
+apps/worker/dist
+apps/worker/coverage
+**/.DS_Store

@@ -1,0 +1,52 @@
+# Normalise line endings in the repository; check out LF everywhere except
+# Windows-only scripts. Shell scripts and container entrypoints MUST stay LF,
+# otherwise they break inside Linux containers ("bad interpreter: ^M").
+* text=auto eol=lf
+
+*.sh        text eol=lf
+*.bash      text eol=lf
+*.sql       text eol=lf
+*.env       text eol=lf
+.env*       text eol=lf
+Dockerfile* text eol=lf
+*.Dockerfile text eol=lf
+*.conf      text eol=lf
+*.ini       text eol=lf
+
+*.ps1  text eol=crlf
+*.psm1 text eol=crlf
+*.cmd  text eol=crlf
+*.bat  text eol=crlf
+
+# Lockfiles: never merge line-by-line, review as generated files
+package-lock.json  -diff linguist-generated=true
+pnpm-lock.yaml     -diff linguist-generated=true
+composer.lock      -diff linguist-generated=true
+
+# Generated Wayfinder bindings (php artisan wayfinder:generate)
+apps/web/resources/js/actions/**  linguist-generated=true
+apps/web/resources/js/routes/**   linguist-generated=true
+apps/web/resources/js/wayfinder/** linguist-generated=true
+
+# Binary assets
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.gif    binary
+*.webp   binary
+*.ico    binary
+*.pdf    binary
+*.docx   binary
+*.woff   binary
+*.woff2  binary
+*.ttf    binary
+
+# Keep CSS/JS diffs readable on GitHub
+*.css  diff=css
+*.php  diff=php
+*.md   diff=markdown
+
+# Export-ignore dev-only material from release archives
+/.github   export-ignore
+/e2e       export-ignore
+/docs/adr  export-ignore

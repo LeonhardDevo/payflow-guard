@@ -1,0 +1,30 @@
+{
+  "name": "platform-e2e",
+  "private": true,
+  "type": "module",
+  "description": "Playwright end-to-end suite (chromium x {en,ru} x {light,dark}) with axe accessibility scans and a no-CDN network guard.",
+  "engines": {
+    "node": ">=24.11.0"
+  },
+  "scripts": {
+    "test": "playwright test",
+    "selftest": "playwright test -c playwright.selftest.config.ts",
+    "test:unit": "node --test \"support/**/*.test.ts\"",
+    "ui": "playwright test --ui",
+    "report": "playwright show-report playwright-report",
+    "browsers": "playwright install chromium",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
+    "@playwright/test": "1.62.1",
+    "@types/node": "^24.19.2",
+    "@types/pg": "^8.15.6",
+    "pg": "^8.23.1",
+    "playwright-core": "1.62.1",
+    "typescript": "^5.9.3"
+  },
+  "overrides": {
+    "playwright-core": "1.62.1"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "id": "2f1a7d99-000f-5000-a000-0a1b2c3d4e60",
+  "status": "canceled",
+  "paid": false,
+  "amount": { "value": "1490.00", "currency": "RUB" },
+  "created_at": "__CAPTURED_AT__",
+  "description": "Subscription, Starter plan, 1 month",
+  "metadata": {
+    "kind": "subscription_renewal",
+    "workspace_id": "__WORKSPACE_ID__",
+    "plan": "starter",
+    "interval": "month",
+    "currency": "RUB",
+    "period_end": "__PERIOD_END__"
+  },
+  "payment_method": {
+    "type": "bank_card",
+    "id": "2f1a7c3e-000f-5000-9000-1b2c3d4e5f60",
+    "saved": true,
+    "title": "Bank card *4444"
+  },
+  "cancellation_details": { "party": "payment_network", "reason": "insufficient_funds" },
+  "recipient": { "account_id": "100500", "gateway_id": "100700" },
+  "refundable": false,
+  "test": true
+}

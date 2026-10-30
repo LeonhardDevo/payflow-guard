@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+>
+    <testsuites>
+        <testsuite name="Unit">
+            <directory>tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Feature">
+            <directory>tests/Feature</directory>
+        </testsuite>
+    </testsuites>
+    <source>
+        <include>
+            <directory>app</directory>
+        </include>
+    </source>
+    <php>
+        <env name="APP_ENV" value="testing" force="true"/>
+        <env name="APP_URL" value="http://localhost:8100" force="true"/>
+        <env name="APP_MAINTENANCE_DRIVER" value="file"/>
+        <env name="BCRYPT_ROUNDS" value="4"/>
+        <env name="BROADCAST_CONNECTION" value="null"/>
+        <env name="CACHE_STORE" value="array" force="true"/>
+        <env name="DB_CONNECTION" value="pgsql" force="true"/>
+        <env name="DB_HOST" value="127.0.0.1" force="true"/>
+        <env name="DB_PORT" value="5441" force="true"/>
+        <env name="DB_DATABASE" value="payflow_test" force="true"/>
+        <env name="DB_USERNAME" value="app" force="true"/>
+        <env name="DB_PASSWORD" value="app" force="true"/>
+        <env name="DB_URL" value="" force="true"/>
+        <env name="MAIL_MAILER" value="array" force="true"/>
+        <env name="QUEUE_CONNECTION" value="sync" force="true"/>
+        <env name="SESSION_DRIVER" value="array" force="true"/>
+        <env name="BILLING_DRIVER" value="fake" force="true"/>
+        <env name="INTERNAL_API_SECRET" value="test-secret" force="true"/>
+        <env name="INTERNAL_KEY_WEB_WORKER" value="" force="true"/>
+        <env name="INTERNAL_KEY_WEB_AI" value="" force="true"/>
+        <env name="BILLING_ALLOW_FAKE_IN_PRODUCTION" value="false" force="true"/>
+        <env name="STRIPE_WEBHOOK_SECRET" value="whsec_test_secret" force="true"/>
+        <env name="WORKER_URL" value="http://worker.test" force="true"/>
+        <env name="AI_URL" value="http://ai.test" force="true"/>
+        <env name="TELEGRAM_BOT_USERNAME" value="test_bot" force="true"/>
+        <env name="LOG_SLOW_QUERY_MS" value="0" force="true"/>
+        <env name="LEGAL_PATH" value="tests/Fixtures/legal" force="true"/>
+        <env name="LEGAL_ENFORCE_ACCEPTANCE" value="false" force="true"/>
+        <env name="LEGAL_REVIEWED" value="false" force="true"/>
+        <env name="LEGAL_AI_DISCOVERY" value="false" force="true"/>
+        <env name="PULSE_ENABLED" value="false"/>
+        <env name="TELESCOPE_ENABLED" value="false"/>
+        <env name="NIGHTWATCH_ENABLED" value="false"/>
+    </php>
+</phpunit>

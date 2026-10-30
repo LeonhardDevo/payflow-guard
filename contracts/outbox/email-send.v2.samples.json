@@ -1,0 +1,85 @@
+{
+  "topic": "email.send",
+  "version": 2,
+  "description": "Shared samples for the email.send v2 payload. The web tests validate produced payloads against email-send.v2.schema.json and these samples; the worker accepts every valid sample and rejects every invalid one.",
+  "valid": [
+    {
+      "name": "reminder_with_pdf_and_unsubscribe_headers",
+      "payload": {
+        "v": 2,
+        "to": "ap@helios-media.example",
+        "to_name": "Rachel Moore",
+        "cc": ["cfo@helios-media.example"],
+        "from_name": "Northstar Digital — Finance",
+        "reply_to": "finance@northstar.example",
+        "subject": "Final notice: invoice NS-2026-0118 ($12,400.00)",
+        "html": "<p>Dear Rachel Moore,</p>",
+        "text": "Dear Rachel Moore,",
+        "locale": "en",
+        "headers": {
+          "List-Unsubscribe": "<https://app.example/i/AbCdEfGhIjKlMnOpQrStUvWxYz0123456789AbCd/reminders/one-click>",
+          "List-Unsubscribe-Post": "List-Unsubscribe=One-Click"
+        },
+        "attachments": [
+          { "filename": "NS-2026-0118.pdf", "content_type": "application/pdf", "internal_path": "/internal/v1/payflow/invoices/118/pdf?workspace_id=1" }
+        ],
+        "reference": { "type": "reminder", "id": 42 },
+        "workspace_id": 1,
+        "retry_profile": "client_mail"
+      }
+    },
+    {
+      "name": "receipt_text_only",
+      "payload": {
+        "v": 2,
+        "to": "billing@brightpath.example",
+        "to_name": null,
+        "from_name": null,
+        "reply_to": null,
+        "subject": "Payment received for invoice NS-2026-0154 — thank you",
+        "text": "We've received your payment.",
+        "locale": "ru",
+        "reference": { "type": "payment_receipt", "id": "7" },
+        "workspace_id": null,
+        "retry_profile": "default"
+      }
+    },
+    {
+      "name": "small_inline_attachment",
+      "payload": {
+        "v": 2,
+        "to": "owner@example.com",
+        "subject": "Export ready",
+        "html": "<p>Ready</p>",
+        "attachments": [{ "filename": "note.txt", "content_type": "text/plain", "content_base64": "SGVsbG8=" }],
+        "reference": { "type": "digest", "id": 3 }
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "name": "no_body",
+      "payload": { "v": 2, "to": "a@example.com", "subject": "Hi", "reference": { "type": "invoice", "id": 1 } }
+    },
+    {
+      "name": "reply_to_as_object",
+      "payload": { "v": 2, "to": "a@example.com", "subject": "Hi", "text": "x", "reply_to": { "address": "b@example.com", "name": "B" }, "reference": { "type": "invoice", "id": 1 } }
+    },
+    {
+      "name": "header_not_allowed",
+      "payload": { "v": 2, "to": "a@example.com", "subject": "Hi", "text": "x", "headers": { "Bcc": "spy@example.com" }, "reference": { "type": "invoice", "id": 1 } }
+    },
+    {
+      "name": "attachment_with_both_sources",
+      "payload": { "v": 2, "to": "a@example.com", "subject": "Hi", "text": "x", "attachments": [{ "filename": "a.pdf", "content_type": "application/pdf", "internal_path": "/internal/v1/x", "content_base64": "AA==" }], "reference": { "type": "invoice", "id": 1 } }
+    },
+    {
+      "name": "too_many_cc",
+      "payload": { "v": 2, "to": "a@example.com", "subject": "Hi", "text": "x", "cc": ["1@e.com", "2@e.com", "3@e.com", "4@e.com", "5@e.com", "6@e.com"], "reference": { "type": "invoice", "id": 1 } }
+    },
+    {
+      "name": "wrong_version",
+      "payload": { "v": 1, "to": "a@example.com", "subject": "Hi", "text": "x", "reference": { "type": "invoice", "id": 1 } }
+    }
+  ]
+}

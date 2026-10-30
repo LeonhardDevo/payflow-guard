@@ -1,0 +1,49 @@
+{
+  "id": "evt_1QfixtureSubUpdated001",
+  "object": "event",
+  "api_version": "2025-09-30.clover",
+  "created": 1768435200,
+  "livemode": false,
+  "pending_webhooks": 1,
+  "request": { "id": "req_fixture", "idempotency_key": null },
+  "type": "customer.subscription.updated",
+  "data": {
+    "object": {
+      "id": "sub_Fixture0001",
+      "object": "subscription",
+      "customer": "cus_Fixture0001",
+      "status": "active",
+      "currency": "usd",
+      "cancel_at_period_end": false,
+      "canceled_at": null,
+      "created": 1767225590,
+      "start_date": 1767225590,
+      "trial_end": null,
+      "livemode": false,
+      "metadata": { "workspace_id": "__WORKSPACE_ID__", "plan": "pro", "interval": "month", "currency": "USD" },
+      "items": {
+        "object": "list",
+        "data": [
+          {
+            "id": "si_Fixture0001",
+            "object": "subscription_item",
+            "quantity": 1,
+            "current_period_start": 1767225590,
+            "current_period_end": 1769903990,
+            "price": {
+              "id": "price_Fixture_business",
+              "object": "price",
+              "active": true,
+              "currency": "usd",
+              "unit_amount": 14900,
+              "lookup_key": "__CATALOG___business_month_usd",
+              "product": "__CATALOG___business",
+              "recurring": { "interval": "month", "interval_count": 1 }
+            }
+          }
+        ]
+      }
+    },
+    "previous_attributes": { "status": "trialing" }
+  }
+}

@@ -1,0 +1,201 @@
+{
+  "topic": "email.send",
+  "version": 1,
+  "description": "Shared contract samples for the foundation (v1) email.send payload, PLATFORM.md §4.2. apps/web (tests/Feature/Outbox/OutboxTest.php) asserts that OutboxMailTransport publishes exactly the valid payloads for the matching mails; apps/worker (tests/jobs.test.ts) asserts that the email job accepts every valid sample and maps it to SMTP, and rejects every invalid one without retrying. Change both sides together. The domain v2 payload (DOMAIN_CONTRACT E.1) gets its own email-send.v2.* files.",
+  "valid": [
+    {
+      "name": "html_only_no_reply_to",
+      "note": "Shape of every Fortify verification / reset and invitation mail: html only, text/to_name/reply_to/workspace_id null, no attachments.",
+      "payload": {
+        "to": "new.user@example.com",
+        "to_name": null,
+        "subject": "Verify Email Address",
+        "html": "<p>Click the button below to verify your email address.</p>",
+        "text": null,
+        "locale": "en",
+        "reference": {
+          "type": "verify_email",
+          "id": "contract-1"
+        },
+        "workspace_id": null,
+        "from": {
+          "address": "hello@contract.test",
+          "name": "Contract Sender"
+        },
+        "reply_to": null,
+        "attachments": []
+      }
+    },
+    {
+      "name": "text_only_with_extras",
+      "note": "Single-part plain-text mail with a recipient name, a reply-to without a name, a workspace and one attachment.",
+      "payload": {
+        "to": "anna@example.com",
+        "to_name": "Анна Петрова",
+        "subject": "Отчёт за месяц",
+        "html": null,
+        "text": "Plain only",
+        "locale": "ru",
+        "reference": {
+          "type": "report",
+          "id": "contract-2"
+        },
+        "workspace_id": 7,
+        "from": {
+          "address": "hello@contract.test",
+          "name": "Contract Sender"
+        },
+        "reply_to": {
+          "address": "owner@acme.test",
+          "name": null
+        },
+        "attachments": [
+          {
+            "filename": "report.txt",
+            "content_type": "text/plain",
+            "content_base64": "aGVsbG8="
+          }
+        ]
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "name": "neither_html_nor_text",
+      "payload": {
+        "to": "new.user@example.com",
+        "to_name": null,
+        "subject": "Verify Email Address",
+        "html": null,
+        "text": null,
+        "locale": "en",
+        "reference": {
+          "type": "verify_email",
+          "id": "contract-1"
+        },
+        "workspace_id": null,
+        "from": {
+          "address": "hello@contract.test",
+          "name": "Contract Sender"
+        },
+        "reply_to": null,
+        "attachments": []
+      }
+    },
+    {
+      "name": "recipient_not_an_email",
+      "payload": {
+        "to": "nobody",
+        "to_name": null,
+        "subject": "Verify Email Address",
+        "html": "<p>Click the button below to verify your email address.</p>",
+        "text": null,
+        "locale": "en",
+        "reference": {
+          "type": "verify_email",
+          "id": "contract-1"
+        },
+        "workspace_id": null,
+        "from": {
+          "address": "hello@contract.test",
+          "name": "Contract Sender"
+        },
+        "reply_to": null,
+        "attachments": []
+      }
+    },
+    {
+      "name": "reply_to_not_an_email",
+      "payload": {
+        "to": "new.user@example.com",
+        "to_name": null,
+        "subject": "Verify Email Address",
+        "html": "<p>Click the button below to verify your email address.</p>",
+        "text": null,
+        "locale": "en",
+        "reference": {
+          "type": "verify_email",
+          "id": "contract-1"
+        },
+        "workspace_id": null,
+        "from": {
+          "address": "hello@contract.test",
+          "name": "Contract Sender"
+        },
+        "reply_to": {
+          "address": "nope",
+          "name": null
+        },
+        "attachments": []
+      }
+    },
+    {
+      "name": "unsupported_locale",
+      "payload": {
+        "to": "new.user@example.com",
+        "to_name": null,
+        "subject": "Verify Email Address",
+        "html": "<p>Click the button below to verify your email address.</p>",
+        "text": null,
+        "locale": "de",
+        "reference": {
+          "type": "verify_email",
+          "id": "contract-1"
+        },
+        "workspace_id": null,
+        "from": {
+          "address": "hello@contract.test",
+          "name": "Contract Sender"
+        },
+        "reply_to": null,
+        "attachments": []
+      }
+    },
+    {
+      "name": "missing_reference",
+      "payload": {
+        "to": "new.user@example.com",
+        "to_name": null,
+        "subject": "Verify Email Address",
+        "html": "<p>Click the button below to verify your email address.</p>",
+        "text": null,
+        "locale": "en",
+        "workspace_id": null,
+        "from": {
+          "address": "hello@contract.test",
+          "name": "Contract Sender"
+        },
+        "reply_to": null,
+        "attachments": []
+      }
+    },
+    {
+      "name": "attachment_not_base64",
+      "payload": {
+        "to": "new.user@example.com",
+        "to_name": null,
+        "subject": "Verify Email Address",
+        "html": "<p>Click the button below to verify your email address.</p>",
+        "text": null,
+        "locale": "en",
+        "reference": {
+          "type": "verify_email",
+          "id": "contract-1"
+        },
+        "workspace_id": null,
+        "from": {
+          "address": "hello@contract.test",
+          "name": "Contract Sender"
+        },
+        "reply_to": null,
+        "attachments": [
+          {
+            "filename": "a.txt",
+            "content_type": "text/plain",
+            "content_base64": "not base64!"
+          }
+        ]
+      }
+    }
+  ]
+}

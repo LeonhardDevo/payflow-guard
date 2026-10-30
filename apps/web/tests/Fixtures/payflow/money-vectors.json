@@ -1,0 +1,79 @@
+{
+    "lines": [
+        {
+            "quantity": "1",
+            "unit_price_minor": 120000,
+            "tax_rate_bp": 0,
+            "amount_minor": 120000,
+            "tax_minor": 0
+        },
+        {
+            "quantity": "10",
+            "unit_price_minor": 15000,
+            "tax_rate_bp": 2000,
+            "amount_minor": 150000,
+            "tax_minor": 30000
+        },
+        {
+            "quantity": "2.5",
+            "unit_price_minor": 3333,
+            "tax_rate_bp": 700,
+            "amount_minor": 8333,
+            "tax_minor": 583
+        },
+        {
+            "quantity": "0.333",
+            "unit_price_minor": 10000,
+            "tax_rate_bp": 1950,
+            "amount_minor": 3330,
+            "tax_minor": 649
+        },
+        {
+            "quantity": "80",
+            "unit_price_minor": 12250,
+            "tax_rate_bp": 0,
+            "amount_minor": 980000,
+            "tax_minor": 0
+        },
+        {
+            "quantity": "35",
+            "unit_price_minor": 11000,
+            "tax_rate_bp": 0,
+            "amount_minor": 385000,
+            "tax_minor": 0
+        },
+        {
+            "quantity": "1.005",
+            "unit_price_minor": 99,
+            "tax_rate_bp": 2000,
+            "amount_minor": 99,
+            "tax_minor": 20
+        }
+    ],
+    "invoices": [
+        {
+            "lines": [
+                { "amount_minor": 120000, "tax_minor": 0, "kind": "service" },
+                {
+                    "amount_minor": 150000,
+                    "tax_minor": 30000,
+                    "kind": "service"
+                }
+            ],
+            "subtotal_minor": 270000,
+            "tax_minor": 30000,
+            "total_minor": 300000,
+            "late_fee_applied_minor": 0
+        },
+        {
+            "lines": [
+                { "amount_minor": 1240000, "tax_minor": 0, "kind": "service" },
+                { "amount_minor": 26040, "tax_minor": 0, "kind": "late_fee" }
+            ],
+            "subtotal_minor": 1266040,
+            "tax_minor": 0,
+            "total_minor": 1266040,
+            "late_fee_applied_minor": 26040
+        }
+    ]
+}

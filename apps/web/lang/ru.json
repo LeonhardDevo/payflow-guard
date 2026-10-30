@@ -1,0 +1,8 @@
+{
+    "roles.owner": "Владелец",
+    "roles.admin": "Администратор",
+    "roles.finance": "Финансист",
+    "roles.approver": "Согласующий",
+    "roles.member": "Участник (аккаунт-менеджер)",
+    "roles.external_approver": "Внешний согласующий"
+}

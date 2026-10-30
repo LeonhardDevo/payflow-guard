@@ -1,0 +1,8 @@
+{
+    "roles.owner": "Owner",
+    "roles.admin": "Admin",
+    "roles.finance": "Finance",
+    "roles.approver": "Approver",
+    "roles.member": "Member (account manager)",
+    "roles.external_approver": "External approver"
+}

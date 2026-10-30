@@ -1,0 +1,284 @@
+# CI for the whole platform. Every job runs offline-capable: fake billing, keyless mock LLM,
+# hash embeddings, offline Telegram bot — no third-party secrets are needed.
+#
+# Service container ports mirror scripts/project.env (PLATFORM.md §2) so the apps' default
+# test configuration (phpunit.xml, worker tests) works unchanged.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  FORCE_COLOR: "1"
+  NO_UPDATE_NOTIFIER: "1"
+  NODE_VERSION: "24"
+  PHP_VERSION: "8.4"
+  PHP_EXTENSIONS: pdo_pgsql, pgsql, redis, intl, zip, gd, bcmath, mbstring, fileinfo, exif, pcntl
+
+jobs:
+  # ------------------------------------------------------------------ platform
+  platform:
+    name: platform · scripts, e2e harness, compose, shell
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            e2e/package-lock.json
+      - name: Install root + e2e tooling
+        run: |
+          npm ci
+          npm --prefix e2e ci
+      - name: Root scripts — typecheck + unit tests
+        run: |
+          npm run typecheck:scripts
+          npm run test:scripts
+      - name: e2e harness — typecheck + unit tests
+        run: |
+          npm --prefix e2e run typecheck
+          npm --prefix e2e run test:unit
+      - name: Shell scripts (shellcheck)
+        run: shellcheck --severity=warning scripts/setup.sh infra/postgres/init/01-init.sh infra/docker/web/entrypoint.sh
+      - name: Compose files are valid
+        run: |
+          docker compose config --quiet
+          node scripts/env-sync.ts --prod
+          docker compose -f docker-compose.prod.yml --env-file infra/env/.env.compose --profile sandbox config --quiet
+
+  # ------------------------------------------------------------------ web
+  web:
+    name: web · pint, vp check, vue-tsc, phpstan, pest, vitest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: pgvector/pgvector:pg17
+        env: { POSTGRES_USER: app, POSTGRES_PASSWORD: app, POSTGRES_DB: payflow }
+        ports: ["5441:5432"]
+        options: >-
+          --health-cmd "pg_isready -U app -d payflow" --health-interval 5s --health-timeout 3s --health-retries 30
+      redis:
+        image: redis:7.4-alpine
+        ports: ["6391:6379"]
+        options: >-
+          --health-cmd "redis-cli ping" --health-interval 5s --health-timeout 3s --health-retries 30
+      stripe-mock:
+        image: stripe/stripe-mock:v0.206.0
+        ports: ["12111:12111"]
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Create <db>_test / <db>_e2e, extensions and schemas
+        working-directory: .
+        run: |
+          docker cp infra/postgres/init/01-init.sh "${{ job.services.postgres.id }}:/tmp/01-init.sh"
+          docker exec "${{ job.services.postgres.id }}" sh /tmp/01-init.sh
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: ${{ env.PHP_EXTENSIONS }}
+          tools: composer:v2
+          coverage: none
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/composer
+          key: composer-${{ runner.os }}-${{ hashFiles('apps/web/composer.lock') }}
+          restore-keys: composer-${{ runner.os }}-
+      - run: composer install --no-interaction --prefer-dist --no-progress
+      - run: npm ci
+      - name: Env files + shared secrets
+        working-directory: .
+        run: node scripts/env-sync.ts
+      - name: Build assets (Vite + Wayfinder)
+        run: npm run build
+      - name: Lint & types
+        run: |
+          vendor/bin/pint --test
+          npm run --if-present check
+          npm run --if-present types:check
+          if [ -f phpstan.neon ] || [ -f phpstan.neon.dist ]; then vendor/bin/phpstan analyse --no-progress --memory-limit=1G; fi
+      - name: Pest (Postgres test database)
+        run: php artisan test
+      - name: Vitest (front-end unit tests)
+        run: npm test
+
+  # ------------------------------------------------------------------ worker
+  worker:
+    name: worker · eslint, tsc, vitest (queues, bot, RAG), build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: pgvector/pgvector:pg17
+        env: { POSTGRES_USER: app, POSTGRES_PASSWORD: app, POSTGRES_DB: payflow }
+        ports: ["5441:5432"]
+        options: >-
+          --health-cmd "pg_isready -U app -d payflow" --health-interval 5s --health-timeout 3s --health-retries 30
+      redis:
+        image: redis:7.4-alpine
+        ports: ["6391:6379"]
+        options: >-
+          --health-cmd "redis-cli ping" --health-interval 5s --health-timeout 3s --health-retries 30
+    defaults:
+      run:
+        working-directory: apps/worker
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Create <db>_test / <db>_e2e, extensions and schemas
+        working-directory: .
+        run: |
+          docker cp infra/postgres/init/01-init.sh "${{ job.services.postgres.id }}:/tmp/01-init.sh"
+          docker exec "${{ job.services.postgres.id }}" sh /tmp/01-init.sh
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: apps/worker/package-lock.json
+      - name: Tesseract OCR (rus + eng)
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends tesseract-ocr tesseract-ocr-eng tesseract-ocr-rus
+      - run: npm ci
+      - run: npm run --if-present lint
+      - run: npm run --if-present typecheck
+      - name: Vitest (real Postgres + Redis)
+        run: npm test
+        env:
+          TEST_DATABASE_URL: postgres://app:app@127.0.0.1:5441/payflow_test
+          TEST_REDIS_URL: redis://127.0.0.1:6391
+      - run: npm run build
+
+  # ------------------------------------------------------------------ e2e
+  e2e:
+    name: e2e · playwright (chromium × en/ru × light/dark) + axe
+    needs: [platform, web, worker]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    services:
+      postgres:
+        image: pgvector/pgvector:pg17
+        env: { POSTGRES_USER: app, POSTGRES_PASSWORD: app, POSTGRES_DB: payflow }
+        ports: ["5441:5432"]
+        options: >-
+          --health-cmd "pg_isready -U app -d payflow" --health-interval 5s --health-timeout 3s --health-retries 30
+      redis:
+        image: redis:7.4-alpine
+        ports: ["6391:6379"]
+        options: >-
+          --health-cmd "redis-cli ping" --health-interval 5s --health-timeout 3s --health-retries 30
+      mailpit:
+        image: axllent/mailpit:latest
+        ports: ["1031:1025", "8131:8025"]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Create <db>_test / <db>_e2e, extensions and schemas
+        run: |
+          docker cp infra/postgres/init/01-init.sh "${{ job.services.postgres.id }}:/tmp/01-init.sh"
+          docker exec "${{ job.services.postgres.id }}" sh /tmp/01-init.sh
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: ${{ env.PHP_EXTENSIONS }}
+          tools: composer:v2
+          coverage: none
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: |
+            apps/web/package-lock.json
+            apps/worker/package-lock.json
+            e2e/package-lock.json
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/composer
+          key: composer-${{ runner.os }}-${{ hashFiles('apps/web/composer.lock') }}
+          restore-keys: composer-${{ runner.os }}-
+      - name: Install apps
+        run: |
+          (cd apps/web && composer install --no-interaction --prefer-dist --no-progress && npm ci)
+          (cd apps/worker && npm ci)
+          npm --prefix e2e ci
+      - name: Env files + shared secrets
+        run: node scripts/env-sync.ts
+      - name: Build web assets
+        run: npm --prefix apps/web run build
+      - name: Playwright browser
+        run: npm --prefix e2e exec -- playwright install --with-deps chromium
+      - name: Harness self-test (network guard, axe, screenshots)
+        run: npm --prefix e2e run selftest
+      - name: End-to-end suite (managed services on <db>_e2e)
+        run: npm --prefix e2e test
+        env:
+          CI: "1"
+          E2E_MODE: managed
+      - name: Upload screenshots, report, traces and service logs
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: e2e-${{ github.run_id }}
+          path: |
+            e2e/artifacts/
+            e2e/playwright-report/
+            e2e/test-results/
+          retention-days: 14
+          if-no-files-found: ignore
+
+  # ------------------------------------------------------------------ images
+  images:
+    name: image · ${{ matrix.service }}
+    needs: [platform]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        service: [web, worker]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+      - name: Build ${{ matrix.service }} (not pushed)
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: infra/docker/${{ matrix.service }}.Dockerfile
+          push: false
+          load: true
+          tags: platform-${{ matrix.service }}:ci
+          cache-from: type=gha,scope=${{ matrix.service }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.service }}
+      - name: Image runs as non-root
+        run: |
+          user=$(docker image inspect platform-${{ matrix.service }}:ci --format '{{.Config.User}}')
+          echo "USER=$user"
+          test -n "$user" && test "$user" != "root" && test "$user" != "0"

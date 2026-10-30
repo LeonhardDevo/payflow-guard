@@ -1,0 +1,1 @@
+The organisation keeps its internal policies, procedures and reference documents in the knowledge base. Typical questions are about how a process works, who is responsible for a step, which limits, deadlines or requirements apply, and where to find a form or contact.

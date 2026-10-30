@@ -1,0 +1,133 @@
+{
+  "$comment": "Seed knowledge-base documents for the PayFlow Guard demo workspace (DOMAIN_CONTRACT I.5, G.6). Read by PayflowDemoSeeder. 'client'/'vendor' are resolved by name in the demo workspace and become tags client:<id>/vendor:<id>; 'link_as_contract' sets clients.contract_document_id.",
+  "documents": [
+    {
+      "file": "credit-collections-policy.en.md",
+      "title": "Credit & Collections Policy v2.1",
+      "locale": "en",
+      "department": "finance",
+      "roles": [],
+      "tags": ["policy", "collections"],
+      "version": "2.1",
+      "effective_date": "2026-01-15"
+    },
+    {
+      "file": "credit-collections-policy.ru.md",
+      "title": "Кредитная политика и порядок взыскания v2.1",
+      "locale": "ru",
+      "department": "finance",
+      "roles": [],
+      "tags": ["policy", "collections"],
+      "version": "2.1",
+      "effective_date": "2026-01-15"
+    },
+    {
+      "file": "msa-helios-media.en.md",
+      "title": "MSA — Helios Media Group (NSD-MSA-2025-014)",
+      "locale": "en",
+      "department": "legal",
+      "roles": [],
+      "tags": ["contract"],
+      "version": "2025-03",
+      "effective_date": "2025-03-01",
+      "client": "Helios Media Group",
+      "link_as_contract": true
+    },
+    {
+      "file": "msa-helios-media.ru.md",
+      "title": "Рамочный договор — Helios Media Group (перевод)",
+      "locale": "ru",
+      "department": "legal",
+      "roles": [],
+      "tags": ["contract", "translation"],
+      "version": "2025-03",
+      "effective_date": "2025-03-01",
+      "client": "Helios Media Group",
+      "link_as_contract": false
+    },
+    {
+      "file": "contract-baltic-logistics.ru.md",
+      "title": "Договор № NSD-2025-031 — Балтийская логистика",
+      "locale": "ru",
+      "department": "legal",
+      "roles": [],
+      "tags": ["contract"],
+      "version": "2025-06",
+      "effective_date": "2025-06-10",
+      "client": "Балтийская логистика",
+      "link_as_contract": true
+    },
+    {
+      "file": "contract-baltic-logistics.en.md",
+      "title": "Services Agreement NSD-2025-031 — Baltic Logistics (translation)",
+      "locale": "en",
+      "department": "legal",
+      "roles": [],
+      "tags": ["contract", "translation"],
+      "version": "2025-06",
+      "effective_date": "2025-06-10",
+      "client": "Балтийская логистика",
+      "link_as_contract": false
+    },
+    {
+      "file": "email-templates-tone-guide.en.md",
+      "title": "Reminder Templates & Tone Guide v1.4",
+      "locale": "en",
+      "department": "finance",
+      "roles": [],
+      "tags": ["templates", "tone"],
+      "version": "1.4",
+      "effective_date": "2026-04-01"
+    },
+    {
+      "file": "email-templates-tone-guide.ru.md",
+      "title": "Шаблоны напоминаний и тон писем v1.4",
+      "locale": "ru",
+      "department": "finance",
+      "roles": [],
+      "tags": ["templates", "tone"],
+      "version": "1.4",
+      "effective_date": "2026-04-01"
+    },
+    {
+      "file": "payment-security-procedure.en.md",
+      "title": "Payment Security Procedure v1.3",
+      "locale": "en",
+      "department": "finance",
+      "roles": [],
+      "tags": ["policy", "payment-guard"],
+      "version": "1.3",
+      "effective_date": "2026-06-01"
+    },
+    {
+      "file": "payment-security-procedure.ru.md",
+      "title": "Регламент безопасности платежей v1.3",
+      "locale": "ru",
+      "department": "finance",
+      "roles": [],
+      "tags": ["policy", "payment-guard"],
+      "version": "1.3",
+      "effective_date": "2026-06-01"
+    },
+    {
+      "file": "client-account-notes.en.md",
+      "title": "Key Account Notes (October 2026)",
+      "locale": "en",
+      "department": "sales",
+      "roles": ["owner", "admin", "finance", "member"],
+      "tags": ["client-notes"],
+      "version": "2026-10",
+      "effective_date": "2026-10-01"
+    },
+    {
+      "file": "client-account-notes.ru.md",
+      "title": "Заметки по ключевым клиентам (октябрь 2026)",
+      "locale": "ru",
+      "department": "sales",
+      "roles": ["owner", "admin", "finance", "member"],
+      "tags": ["client-notes"],
+      "version": "2026-10",
+      "effective_date": "2026-10-01"
+    }
+  ]
+}

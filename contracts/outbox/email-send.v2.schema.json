@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://payflow.test/contracts/outbox/email-send.v2.schema.json",
+  "title": "email.send payload v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["v", "to", "subject", "reference"],
+  "properties": {
+    "v": { "const": 2 },
+    "to": { "type": "string", "format": "email", "minLength": 3, "maxLength": 255 },
+    "to_name": { "type": ["string", "null"], "maxLength": 255 },
+    "cc": { "type": "array", "maxItems": 5, "items": { "type": "string", "format": "email", "maxLength": 255 } },
+    "from_name": { "type": ["string", "null"], "maxLength": 120 },
+    "reply_to": { "type": ["string", "null"], "format": "email", "maxLength": 255 },
+    "subject": { "type": "string", "minLength": 1, "maxLength": 998 },
+    "html": { "type": "string", "minLength": 1 },
+    "text": { "type": "string", "minLength": 1 },
+    "locale": { "enum": ["en", "ru", null] },
+    "headers": {
+      "type": "object",
+      "propertyNames": { "pattern": "^(List-Unsubscribe|List-Unsubscribe-Post|X-PF-[A-Za-z0-9-]+)$" },
+      "additionalProperties": { "type": "string", "maxLength": 2000 }
+    },
+    "attachments": {
+      "type": "array",
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["filename", "content_type"],
+        "properties": {
+          "filename": { "type": "string", "minLength": 1, "maxLength": 255 },
+          "content_type": { "type": "string", "minLength": 3, "maxLength": 255 },
+          "internal_path": { "type": "string", "pattern": "^/internal/v1/" },
+          "content_base64": { "type": "string", "maxLength": 349528 }
+        },
+        "oneOf": [
+          { "required": ["internal_path"], "not": { "required": ["content_base64"] } },
+          { "required": ["content_base64"], "not": { "required": ["internal_path"] } }
+        ]
+      }
+    },
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "id"],
+      "properties": {
+        "type": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "id": { "type": ["string", "integer"] }
+      }
+    },
+    "workspace_id": { "type": ["integer", "null"] },
+    "retry_profile": { "enum": ["default", "client_mail"] }
+  },
+  "anyOf": [{ "required": ["html"] }, { "required": ["text"] }]
+}

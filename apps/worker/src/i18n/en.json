@@ -1,0 +1,80 @@
+{
+  "common": {
+    "error": "Something went wrong on our side. Please try again in a minute.",
+    "unavailable": "{product} is temporarily unavailable. Please try again a bit later.",
+    "rate_limited": "You are sending messages too fast. Please wait a minute and try again.",
+    "private_only": "Please write to me in a private chat."
+  },
+  "start": {
+    "welcome_linked": "Welcome back, <b>{name}</b>!\nYou are connected to <b>{workspace}</b> in {product}. Ask me anything about your workspace documents, or type /help.",
+    "welcome_unlinked": "Hi! I am the {product} assistant.\n\nTo get started, link your Telegram account:\n1. Open {product} → <b>Settings → Integrations</b>.\n2. Press <b>Connect Telegram</b> and follow the link back to this chat.",
+    "linked": "Done! Your Telegram is now linked to {product} as <b>{name}</b>.\nAsk me a question, or type /help to see what I can do.",
+    "linked_workspace": "Done! Your Telegram is now linked to {product} as <b>{name}</b> (workspace <b>{workspace}</b>).\nAsk me a question, or type /help to see what I can do.",
+    "invalid_token": "This link is invalid or has expired. Generate a new one in {product} → <b>Settings → Integrations</b>.",
+    "conflict": "This Telegram account is already linked to another {product} user. Unlink it there first, then try again.",
+    "open_settings": "Open integration settings"
+  },
+  "unlinked": {
+    "message": "Your Telegram account is not linked to {product} yet.\n\nOpen {product} → <b>Settings → Integrations</b>, press <b>Connect Telegram</b> and follow the link. It takes less than a minute.",
+    "settings_url": "Settings: {url}"
+  },
+  "help": {
+    "title": "<b>{product} assistant</b>",
+    "intro": "Send me a question in plain words and I will answer from your workspace's approved documents, with sources.",
+    "commands": "Commands:"
+  },
+  "commands": {
+    "start": "Start or link your account",
+    "help": "What I can do",
+    "lang": "Change language",
+    "whoami": "Show the linked account",
+    "privacy": "How your data is handled",
+    "unlink": "Disconnect this Telegram account"
+  },
+  "lang": {
+    "choose": "Choose your language:",
+    "changed": "Language set to English.",
+    "button_ru": "Русский",
+    "button_en": "English"
+  },
+  "whoami": {
+    "linked": "<b>{name}</b>\nWorkspace: <b>{workspace}</b>\nRole: <b>{role}</b>\nPlan: {plan}\nLanguage: {locale}\nPermissions: {permissions}",
+    "no_workspace": "no workspace selected",
+    "none": "none",
+    "unlinked": "This Telegram account is not linked to {product}. Use the link from <b>Settings → Integrations</b>."
+  },
+  "assistant": {
+    "sources": {
+      "one": "<b>Source</b>",
+      "other": "<b>Sources ({count})</b>"
+    },
+    "page": "p. {page}",
+    "refused_hint": "I could not find this in the approved documents.",
+    "no_workspace": "Select a workspace in {product} first, then ask again.",
+    "empty_answer": "I have no answer for that yet.",
+    "unknown_command": "I do not know this command. Type /help to see what I can do.",
+    "text_only": "I understand text messages only. Please type your question.",
+    "live_data": "Live {product} data was used for this answer.",
+    "quota_exceeded": "Your workspace has used all assistant questions included in its plan this month ({used} of {limit}). Ask an owner to upgrade the plan, or try again next month."
+  },
+  "actions": {
+    "expired": "This button has expired. Ask your question again.",
+    "forbidden": "This button belongs to another user.",
+    "done": "Done.",
+    "failed": "Could not complete the action. Please try again later.",
+    "unavailable": "This action is not available yet."
+  },
+  "notify": {
+    "fallback": "You have a new notification in {product}."
+  },
+  "privacy": {
+    "notice": "Privacy notice from the {product} bot\n\nWhen you link this chat to {product}, we store your Telegram user id, chat id and username to deliver notifications and answer your questions. Questions you ask and the answers are logged for the owners and admins of your workspace and deleted after the retention period your workspace sets. We do not keep other message content.\n\nMore: /privacy. Disconnect any time: /unlink.\nPrivacy Policy: {url}",
+    "details": "<b>Privacy</b>\n\n<b>What we store:</b> your Telegram user id, chat id, username and language; the questions you ask the assistant and its answers (AI query log).\n<b>Who sees it:</b> owners and admins of your workspace can review the AI query log. Nothing is used to train AI models.\n<b>How long:</b> the AI query log is deleted after the retention period of your workspace; other message content is not stored.\n<b>Disconnect:</b> /unlink here or <b>Settings → Integrations</b> in {product}.\n\nPrivacy Policy: {url}",
+    "unlink_confirm": "Disconnect this Telegram account from {product}? You will stop receiving notifications here.",
+    "unlink_button": "Disconnect",
+    "cancel_button": "Cancel",
+    "unlinked": "Done. This Telegram account is no longer linked to {product}. You can link it again in <b>Settings → Integrations</b>.",
+    "not_linked": "This Telegram account is not linked to {product}.",
+    "cancelled": "Nothing changed."
+  }
+}

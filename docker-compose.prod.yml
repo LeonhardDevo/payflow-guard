@@ -1,0 +1,169 @@
+name: ${COMPOSE_PROJECT:-payflow-prod}
+
+x-defaults: &defaults
+  restart: unless-stopped
+  init: true
+  logging:
+    driver: json-file
+    options: { max-size: "10m", max-file: "5" }
+
+x-db-env: &db-env
+  DB_CONNECTION: pgsql
+  DB_HOST: postgres
+  DB_PORT: "5432"
+  DB_DATABASE: ${POSTGRES_DB:-payflow}
+  DB_USERNAME: ${POSTGRES_USER:-app}
+  DB_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in infra/env/.env.compose (npm run env:sync -- --prod)}
+  REDIS_HOST: redis
+  REDIS_PORT: "6379"
+  REDIS_PASSWORD: "null"
+  WORKER_URL: http://worker:8101
+  AI_URL: http://rag:8102
+
+x-web: &web
+  <<: *defaults
+  image: ${COMPOSE_PROJECT:-payflow-prod}-web:latest
+  build:
+    context: .
+    dockerfile: infra/docker/web.Dockerfile
+  env_file:
+    - path: infra/env/.env.web
+      required: true
+  environment:
+    <<: *db-env
+  volumes:
+    - web-storage:/app/storage/app
+
+services:
+  postgres:
+    <<: *defaults
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-app}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in infra/env/.env.compose}
+      POSTGRES_DB: ${POSTGRES_DB:-payflow}
+      EXTRA_DB_SUFFIXES: ""
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./infra/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  redis:
+    <<: *defaults
+    image: redis:7.4-alpine
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory-policy", "noeviction"]
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  web-migrate:
+    <<: *web
+    restart: "no"
+    command: ["php", "artisan", "migrate", "--force", "--no-interaction"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    healthcheck:
+      disable: true
+
+  web:
+    <<: *web
+    depends_on:
+      web-migrate: { condition: service_completed_successfully }
+    ports:
+      - "${PUBLISH_HOST:-127.0.0.1}:${WEB_PUBLIC_PORT:-8080}:8080"
+
+  scheduler:
+    <<: *web
+    command: ["php", "artisan", "schedule:work", "--no-interaction"]
+    depends_on:
+      web-migrate: { condition: service_completed_successfully }
+    healthcheck:
+      test: ["CMD-SHELL", "php artisan schedule:list >/dev/null 2>&1"]
+      interval: 60s
+      timeout: 20s
+      retries: 3
+
+  rag:
+    <<: *defaults
+    image: ${COMPOSE_PROJECT:-payflow-prod}-worker:latest
+    build:
+      context: .
+      dockerfile: infra/docker/worker.Dockerfile
+    env_file:
+      - path: infra/env/.env.worker
+        required: true
+    environment:
+      WORKER_ROLES: rag
+      DATABASE_URL: postgres://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD:?}@postgres:5432/${POSTGRES_DB:-payflow}
+      REDIS_URL: redis://redis:6379
+      WEB_URL: http://web:8080
+      HOST: 0.0.0.0
+      PORT: "8102"
+      INTERNAL_API_SECRET: ""
+      INTERNAL_KEY_WEB_WORKER: ""
+      STRIPE_WEBHOOK_SECRET: ""
+      STRIPE_SECRET_KEY: ""
+      TELEGRAM_BOT_TOKEN: ""
+      TELEGRAM_WEBHOOK_SECRET: ""
+      SMTP_PASSWORD: ""
+      QUEUE_DASHBOARD_PASSWORD: ""
+    volumes:
+      - embeddings-cache:/home/node/.cache/transformers-js
+    depends_on:
+      web-migrate: { condition: service_completed_successfully }
+
+  worker:
+    <<: *defaults
+    image: ${COMPOSE_PROJECT:-payflow-prod}-worker:latest
+    build:
+      context: .
+      dockerfile: infra/docker/worker.Dockerfile
+    env_file:
+      - path: infra/env/.env.worker
+        required: true
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD:?}@postgres:5432/${POSTGRES_DB:-payflow}
+      REDIS_URL: redis://redis:6379
+      WEB_URL: http://web:8080
+      AI_URL: http://rag:8102
+      WORKER_ROLES: jobs,bot,ingress
+      HOST: 0.0.0.0
+      PORT: "8101"
+      INTERNAL_KEY_WEB_AI: ""
+      AI_SETTINGS_KEY: ""
+      ANTHROPIC_API_KEY: ""
+      OPENAI_API_KEY: ""
+      DEEPSEEK_API_KEY: ""
+      OPENROUTER_API_KEY: ""
+      NVIDIA_API_KEY: ""
+      OPENCODE_ZEN_API_KEY: ""
+      OPENCODE_GO_API_KEY: ""
+      EMBEDDINGS_API_KEY: ""
+    ports:
+      - "${PUBLISH_HOST:-127.0.0.1}:${WORKER_PUBLIC_PORT:-8081}:8101"
+    depends_on:
+      web: { condition: service_healthy }
+      rag: { condition: service_healthy }
+      redis: { condition: service_healthy }
+
+  mailpit:
+    <<: *defaults
+    image: axllent/mailpit:latest
+    profiles: ["sandbox"]
+    ports:
+      - "${PUBLISH_HOST:-127.0.0.1}:8025:8025"
+
+volumes:
+  pgdata:
+  redisdata:
+  web-storage:
+  embeddings-cache:
