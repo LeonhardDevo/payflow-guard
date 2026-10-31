@@ -396,6 +396,7 @@ const canSend = computed(() => pf.can('reminders.send'));
                             variant="outline"
                             :disabled="Boolean(busy)"
                             :data-test="`send-now-${row.id}`"
+                            :aria-label="t('pf.reminders.send_now')"
                             @click="act('send', row)"
                         >
                             <Spinner
