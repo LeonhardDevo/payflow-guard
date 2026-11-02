@@ -12,7 +12,7 @@ import {
     Info,
     Rocket,
 } from '@lucide/vue';
-import { useNow } from '@vueuse/core';
+import { useIntervalFn, useNow } from '@vueuse/core';
 import { computed, ref, watch } from 'vue';
 import SearchableSelect from '@/components/common/SearchableSelect.vue';
 import StepIndicator from '@/components/common/StepIndicator.vue';
@@ -230,7 +230,7 @@ function submit(): void {
     });
 }
 
-const now = useNow({ interval: 30_000 });
+const now = useNow({ scheduler: (update) => useIntervalFn(update, 30_000) });
 
 const preview = computed(() => {
     const intl = INTL_LOCALE[form.locale] ?? 'en-US';

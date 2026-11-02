@@ -2,9 +2,10 @@
 import { ArrowDown, ArrowUp, ArrowUpDown } from '@lucide/vue';
 import type { ColumnDef, SortingState } from '@tanstack/vue-table';
 import {
-    getCoreRowModel,
-    getSortedRowModel,
-    useVueTable,
+    createSortedRowModel,
+    rowSortingFeature,
+    tableFeatures,
+    useTable,
 } from '@tanstack/vue-table';
 import { computed, ref } from 'vue';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -47,7 +48,12 @@ const emit = defineEmits<{ rowClick: [row: TRow] }>();
 
 const sorting = ref<SortingState>([]);
 
-const columnDefs = computed<ColumnDef<TRow, unknown>[]>(() =>
+const features = tableFeatures({
+    rowSortingFeature,
+    sortedRowModel: createSortedRowModel(),
+});
+
+const columnDefs = computed<ColumnDef<typeof features, TRow>[]>(() =>
     props.columns.map((column) => ({
         id: column.id,
         accessorFn:
@@ -59,24 +65,15 @@ const columnDefs = computed<ColumnDef<TRow, unknown>[]>(() =>
     })),
 );
 
-const table = useVueTable({
-    get data() {
-        return props.rows;
-    },
-    get columns() {
-        return columnDefs.value;
-    },
-    state: {
-        get sorting() {
-            return sorting.value;
-        },
-    },
+const table = useTable<typeof features, TRow>({
+    features,
+    data: computed(() => props.rows),
+    columns: columnDefs,
+    state: computed(() => ({ sorting: sorting.value })),
     onSortingChange: (updater) => {
         sorting.value =
             typeof updater === 'function' ? updater(sorting.value) : updater;
     },
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
     getRowId: (row) => String(props.rowKey(row)),
 });
 
@@ -262,7 +259,7 @@ function onRowKey(event: KeyboardEvent, row: TRow): void {
                             @keydown="onRowKey($event, row.original)"
                         >
                             <td
-                                v-for="cell in row.getVisibleCells()"
+                                v-for="cell in row.getAllCells()"
                                 :key="cell.id"
                                 :class="
                                     cn(

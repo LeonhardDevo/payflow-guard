@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useNow } from '@vueuse/core';
+import { useIntervalFn, useNow } from '@vueuse/core';
 import { computed } from 'vue';
 import { useFormat } from '@/composables/useFormat';
 import { toDate } from '@/lib/format';
@@ -7,7 +7,7 @@ import { toDate } from '@/lib/format';
 const props = defineProps<{ value: string | null | undefined }>();
 
 const fmt = useFormat();
-const now = useNow({ interval: 30_000 });
+const now = useNow({ scheduler: (update) => useIntervalFn(update, 30_000) });
 const date = computed(() => toDate(props.value));
 </script>
 

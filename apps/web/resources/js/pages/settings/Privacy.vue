@@ -13,7 +13,7 @@ import {
     Undo2,
     UserX,
 } from '@lucide/vue';
-import { useNow } from '@vueuse/core';
+import { useIntervalFn, useNow } from '@vueuse/core';
 import { computed, ref, watch } from 'vue';
 import ConfirmDialog from '@/components/common/ConfirmDialog.vue';
 import SectionCard from '@/components/common/SectionCard.vue';
@@ -69,7 +69,7 @@ const page = usePage();
 const ws = computed<PrivacyWorkspace | null>(() => props.privacy_workspace);
 const perms = computed<PrivacyPermissions>(() => props.privacy_can);
 const fmt = useFormat();
-const now = useNow({ interval: 60_000 });
+const now = useNow({ scheduler: (update) => useIntervalFn(update, 60_000) });
 
 const workspaceName = computed(
     () => ws.value?.name ?? page.props.workspace?.name ?? '',

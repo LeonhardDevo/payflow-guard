@@ -10,7 +10,7 @@ import {
     Smartphone,
     TriangleAlert,
 } from '@lucide/vue';
-import { useNow } from '@vueuse/core';
+import { useIntervalFn, useNow } from '@vueuse/core';
 import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import { toast } from 'vue-sonner';
 import ConfirmDialog from '@/components/common/ConfirmDialog.vue';
@@ -56,7 +56,7 @@ const props = defineProps<{
 const http = useHttp<Record<string, never>, TelegramLinkResponse>({});
 const link = ref<TelegramLinkResponse | null>(null);
 const error = ref<string | null>(null);
-const now = useNow({ interval: 1000 });
+const now = useNow({ scheduler: (update) => useIntervalFn(update, 1000) });
 
 const remaining = computed(() =>
     link.value ? secondsLeft(link.value.expires_at, now.value.getTime()) : 0,
