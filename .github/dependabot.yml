@@ -7,12 +7,24 @@ updates:
       actions: { patterns: ["*"] }
 
   - package-ecosystem: npm
-    directories: [/, /e2e, /apps/web, /apps/worker]
+    directories: [/, /e2e]
     schedule: { interval: weekly }
     open-pull-requests-limit: 10
     groups:
       minor-and-patch:
         update-types: [minor, patch]
+
+  - package-ecosystem: npm
+    directories: [/apps/web, /apps/worker]
+    schedule: { interval: weekly }
+    open-pull-requests-limit: 10
+    groups:
+      minor-and-patch:
+        update-types: [minor, patch]
+    ignore:
+      - { dependency-name: typescript, update-types: [version-update:semver-major] }
+      - { dependency-name: vite-plus, update-types: [version-update:semver-major] }
+      - { dependency-name: "@voidzero-dev/vite-plus-*", update-types: [version-update:semver-major] }
 
   - package-ecosystem: composer
     directory: /apps/web
