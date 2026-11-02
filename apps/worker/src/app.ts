@@ -61,7 +61,7 @@ export async function createApp(config: AppConfig, logger: Logger): Promise<Work
     Promise.all(
       [...queues.queues.values()].map(async (queue) => ({
         queue: queue.name,
-        counts: await queue.getJobCounts('waiting', 'active', 'delayed', 'failed', 'completed', 'prioritized', 'paused'),
+        counts: await queue.getJobCounts('waiting', 'active', 'delayed', 'failed', 'completed', 'prioritized'),
       })),
     ),
   );

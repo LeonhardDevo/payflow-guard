@@ -1,6 +1,17 @@
-import { Redis, type RedisOptions } from 'ioredis';
+import { Redis } from 'ioredis';
 
-export function redisOptionsFromUrl(url: string): RedisOptions {
+export type RedisUrlOptions = {
+  host: string;
+  port: number;
+  username?: string;
+  password?: string;
+  db?: number;
+  tls?: Record<string, never>;
+  maxRetriesPerRequest: null;
+  enableReadyCheck: boolean;
+};
+
+export function redisOptionsFromUrl(url: string): RedisUrlOptions {
   const parsed = new URL(url);
   if (parsed.protocol !== 'redis:' && parsed.protocol !== 'rediss:') {
     throw new Error(`Unsupported Redis URL protocol: ${parsed.protocol}`);
