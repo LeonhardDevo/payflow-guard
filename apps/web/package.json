@@ -50,7 +50,7 @@
         "typescript": "^5.2.2",
         "vite": "^8.0.0",
         "vite-plus": "0.3.0",
-        "vue-tsc": "^2.2.4"
+        "vue-tsc": "^3.3.14"
     },
     "optionalDependencies": {
         "@rollup/rollup-linux-x64-gnu": "4.65.1",
